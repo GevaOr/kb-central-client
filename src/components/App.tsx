@@ -9,7 +9,7 @@ import {
 import { AuthProvider } from '../authProvider';
 import Home from './Home';
 import Logout from './Logout';
-import NavBar from './NavBar';
+import LandingNavBar from './LandingNavBar';
 import PageNotFound from './PageNotFound';
 import PassReset from './PassReset';
 import SignIn from './SignIn';
@@ -28,29 +28,15 @@ const App: FC = () => {
   return (
     <AuthProvider>
       <Router>
-        <NavBar />
+        {/* <LandingNavBar /> */}
         <Switch>
-          <Route exact path="/workspace">
-            <Workspace />
-          </Route>
-          <Route exact path="/signin">
-            <SignIn />
-          </Route>
-          <Route exact path="/signup">
-            <SignUp />
-          </Route>
-          <Route exact path="/passreset">
-            <PassReset />
-          </Route>
-          <Route exact path="/logout">
-            <Logout />
-          </Route>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route path="*">
-            <PageNotFound />
-          </Route>
+          <Route exact path="/signin" component={SignIn} />
+          <Route exact path="/signup" component={SignUp} />
+          <Route exact path="/passreset" component={PassReset} />
+          <Route exact path="/logout" component={Logout} />
+          <Route exact path="/" component={Home} />
+          <Route path="/workspace" component={Workspace} />
+          <Route path="*" component={PageNotFound} />
         </Switch>
       </Router >
     </AuthProvider>

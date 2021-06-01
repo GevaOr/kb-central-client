@@ -1,4 +1,5 @@
 import { FC } from 'react'
+import LandingNavBar from './LandingNavBar';
 
 const PassReset: FC = () => {
     return (

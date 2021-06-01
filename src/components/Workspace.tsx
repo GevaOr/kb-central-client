@@ -12,7 +12,7 @@ import Container from '@material-ui/core/Container';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { ClassNameMap } from '@material-ui/core/styles/withStyles';
-import WorkspaceNav from './WorkspaceNav';
+// import WorkspaceNav from './WorkspaceNav';
 // import { useAuth } from '../authProvider';
 
 
@@ -115,7 +115,8 @@ const Workspace: FC = () => {
     return (
         <div className={classes.root}>
             <CssBaseline />
-            {/* <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+            {/* ORIGINAL APP BAR */}
+            <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
                 <Toolbar className={classes.toolbar}>
                     <IconButton
                         edge="start"
@@ -130,8 +131,10 @@ const Workspace: FC = () => {
                         Dashboard
             </Typography>
                 </Toolbar>
-            </AppBar> */}
-            <WorkspaceNav />
+            </AppBar>
+
+            {/* <WorkspaceNav /> */}
+
             <Drawer
                 variant="permanent"
                 classes={{
@@ -145,7 +148,7 @@ const Workspace: FC = () => {
                     </IconButton>
                 </div>
                 <Divider />
-                {"DATA HERE"}
+                {/* {"DATA HERE"} */}
             </Drawer>
             <main className={classes.content}>
                 <div className={classes.appBarSpacer} />

@@ -2,8 +2,8 @@ import { FC } from 'react'
 import { Link } from 'react-router-dom';
 import { useAuth } from '../authProvider';
 
-const NavBar: FC = () => {
-    const { user, isLoading, logout } = useAuth();
+const LandingNavBar: FC = () => {
+    const { user, isLoading } = useAuth();
 
     if (isLoading) return null; // TODO - Loading Spinner
 
@@ -37,5 +37,5 @@ const NavBar: FC = () => {
     )
 }
 
-export default NavBar;
+export default LandingNavBar;
 
