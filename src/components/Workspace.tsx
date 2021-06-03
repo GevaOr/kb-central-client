@@ -1,6 +1,6 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import clsx from 'clsx';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles, Theme, fade } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -12,8 +12,16 @@ import Container from '@material-ui/core/Container';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { ClassNameMap } from '@material-ui/core/styles/withStyles';
+import { useAuth } from '../authProvider';
+import { AccountCircle } from '@material-ui/icons';
+import SearchIcon from '@material-ui/icons/Search';
+import InputBase from '@material-ui/core/InputBase';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
+import { useHistory } from 'react-router';
+
 // import WorkspaceNav from './WorkspaceNav';
-// import { useAuth } from '../authProvider';
+
 
 
 
@@ -27,10 +35,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     toolbar: {
         paddingRight: 24, // keep right padding when drawer closed
     },
-    toolbarIcon: {
+    drawerTopRow: {
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'flex-end',
+        justifyContent: 'space-between',
         padding: '0 8px',
         ...theme.mixins.toolbar,
     },
@@ -57,6 +65,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     title: {
         flexGrow: 1,
+        cursor: 'pointer',
+        '&:hover': {
+            color: fade(theme.palette.common.white, 0.9),
+        },
     },
     drawerPaper: {
         position: 'relative',
@@ -97,39 +109,152 @@ const useStyles = makeStyles((theme: Theme) => ({
     fixedHeight: {
         height: 240,
     },
+    search: {
+        position: 'relative',
+        borderRadius: theme.shape.borderRadius,
+        backgroundColor: fade(theme.palette.common.white, 0.15),
+        '&:hover': {
+            backgroundColor: fade(theme.palette.common.white, 0.20),
+        },
+        marginLeft: 0,
+        width: '100%',
+        [theme.breakpoints.up('sm')]: {
+            marginLeft: theme.spacing(1),
+            width: 'auto',
+        },
+    },
+    searchIcon: {
+        padding: theme.spacing(0, 2),
+        height: '100%',
+        position: 'absolute',
+        pointerEvents: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    inputRoot: {
+        color: 'inherit',
+    },
+    inputInput: {
+        padding: theme.spacing(1, 1, 1, 0),
+        // vertical padding + font size from searchIcon
+        paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+        transition: theme.transitions.create('width'),
+        width: '100%',
+        [theme.breakpoints.up('sm')]: {
+            width: '12ch',
+            '&:focus': {
+                width: '20ch',
+            },
+        },
+    },
 }));
 
 
 const Workspace: FC = () => {
     const classes: ClassNameMap = useStyles();
+    const { user } = useAuth();
+    const [isAuth, setIsAuth] = useState<boolean>();
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    // const open = Boolean(anchorEl);
+    const [menuOpen, setMenuOpen] = useState(true);
+    const optionsOpen = Boolean(anchorEl);
+    const history = useHistory();
 
-    // const {user} = useAuth()
+    // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     setIsAuth(event.target.checked);
+    // };
 
-    const [open, setOpen] = useState(true);
+    const handleMenuSelect = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleOptionsClose = () => {
+        setAnchorEl(null);
+    };
+
+
     const handleDrawerOpen = () => {
-        setOpen(true);
+        setMenuOpen(true);
     };
     const handleDrawerClose = () => {
-        setOpen(false);
+        setMenuOpen(false);
     };
+
+    const goHome = () => {
+        history.push("/")
+    }
+
+    useEffect(() => {
+        user ? setIsAuth(true) : setIsAuth(false)
+    }, [user])
+
     return (
         <div className={classes.root}>
             <CssBaseline />
-            {/* ORIGINAL APP BAR */}
-            <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+            <AppBar position="absolute" className={clsx(classes.appBar, menuOpen && classes.appBarShift)}>
                 <Toolbar className={classes.toolbar}>
                     <IconButton
                         edge="start"
                         color="inherit"
                         aria-label="open drawer"
                         onClick={handleDrawerOpen}
-                        className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+                        className={clsx(classes.menuButton, menuOpen && classes.menuButtonHidden)}
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                        Dashboard
-            </Typography>
+                    <Typography onClick={goHome} variant="h6" className={classes.title}>
+                        KB Central
+                    </Typography>
+                    <div className={classes.search}>
+                        <div className={classes.searchIcon}>
+                            <SearchIcon />
+                        </div>
+                        <InputBase
+                            placeholder="Search…"
+                            classes={{
+                                root: classes.inputRoot,
+                                input: classes.inputInput,
+                            }}
+                            inputProps={{ 'aria-label': 'search' }}
+                        />
+                    </div>
+                    {isAuth && (
+                        <div>
+                            <IconButton
+                                aria-label="account of current user"
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
+                                onClick={handleMenuSelect}
+                                color="inherit"
+                            >
+                                <AccountCircle />
+                            </IconButton>
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={anchorEl}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'left',
+                                }}
+                                open={optionsOpen}
+                                onClose={handleOptionsClose}
+                            >
+                                <MenuItem onClick={handleOptionsClose}>My account</MenuItem>
+                                <MenuItem onClick={async () => {
+                                    history.push(
+                                        '/logout'
+                                    );
+                                }
+                                }>Log out</MenuItem>
+                            </Menu>
+                        </div>
+                    )}
                 </Toolbar>
             </AppBar>
 
@@ -138,11 +263,12 @@ const Workspace: FC = () => {
             <Drawer
                 variant="permanent"
                 classes={{
-                    paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+                    paper: clsx(classes.drawerPaper, !menuOpen && classes.drawerPaperClose),
                 }}
-                open={open}
+                open={menuOpen}
             >
-                <div className={classes.toolbarIcon}>
+                <div className={classes.drawerTopRow}>
+                    <Typography variant="h6" color="textPrimary">Hi, {user ? user.displayName : 'Guest'}!</Typography>
                     <IconButton onClick={handleDrawerClose}>
                         <ChevronLeftIcon />
                     </IconButton>
