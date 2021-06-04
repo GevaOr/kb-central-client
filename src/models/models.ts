@@ -11,11 +11,12 @@ export interface IArticle {
     content: string; // html
     parent?: string;
     hasChildren: boolean; // ???
+    creatorUID: string;
     // children: Array<string | null>; // objectId > article
     comments: Array<string | null>; // objectId > comment
     createdAt: Date; // or string?
     updatedAt: Date; // or string?
-    level: number;
+    // level: number;
 }
 
 export interface IUserDetails {

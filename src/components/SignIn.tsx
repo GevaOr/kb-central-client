@@ -4,7 +4,7 @@ import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -15,9 +15,10 @@ import { useHistory } from 'react-router';
 import { ILoginInputs } from '../models/models';
 import { fireLogin } from '../services/auth.service';
 import Alert from '@material-ui/lab/Alert';
+import { ClassNameMap } from '@material-ui/styles';
 
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
     paper: {
         marginTop: theme.spacing(8),
         display: 'flex',
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SignIn: FC = () => {
-    const classes = useStyles();
+    const classes: ClassNameMap = useStyles();
     const {
         register,
         handleSubmit,

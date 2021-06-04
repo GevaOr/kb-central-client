@@ -9,7 +9,7 @@ import {
 import { AuthProvider } from '../authProvider';
 import Home from './Home';
 import Logout from './Logout';
-import LandingNavBar from './LandingNavBar';
+// import LandingNavBar from './LandingNavBar';
 import PageNotFound from './PageNotFound';
 import PassReset from './PassReset';
 import SignIn from './SignIn';

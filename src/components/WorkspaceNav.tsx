@@ -16,6 +16,7 @@ import Menu from '@material-ui/core/Menu';
 import { useAuth } from '../authProvider';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
+import { ClassNameMap } from '@material-ui/styles';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -71,7 +72,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const WorkspaceNav: FC = (props) => {
-    const classes = useStyles();
+    const classes: ClassNameMap = useStyles();
     const { user, logout } = useAuth();
     const [isAuth, setIsAuth] = useState<boolean>();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
