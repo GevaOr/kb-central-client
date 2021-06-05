@@ -4,7 +4,7 @@ import { db, firebase } from "../firebase";
 const usersUrl: string = "/users";
 const usersRef: firebase.database.Reference = db.ref(usersUrl);
 
-export const getUserByKey = (key: string): Promise<firebase.database.DataSnapshot> => {
+export const getUserDataByKey = (key: string): Promise<firebase.database.DataSnapshot> => {
     return usersRef.child(key).get()
 };
 

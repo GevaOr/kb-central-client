@@ -10,11 +10,17 @@ const Home: FC = () => {
         <div>
             {user ?
                 // User message:
-                <Typography variant="h2">Welcome, {user.displayName}!
-                </Typography>
+                <div>
+                    <Typography variant="h2">
+                        Welcome, {user.displayName}!
+                    </Typography>
+                </div>
                 // Default message:
-                : <Typography variant="h2">Welcome to the {productName} knowledge base!
-                </Typography>
+                : <div>
+                    <Typography variant="h2">
+                        Welcome to the {productName} knowledge base!
+                    </Typography>
+                </div>
             }
         </div>
     )

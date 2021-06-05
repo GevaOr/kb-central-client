@@ -1,3 +1,7 @@
+import { FC, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useHistory } from 'react-router';
+
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
@@ -8,14 +12,14 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import { FC, useState } from 'react';
-import GoogleButton from 'react-google-button';
-import { useForm } from 'react-hook-form';
-import { useHistory } from 'react-router';
-import { ILoginInputs } from '../models/models';
-import { fireLogin } from '../services/auth.service';
 import Alert from '@material-ui/lab/Alert';
 import { ClassNameMap } from '@material-ui/styles';
+
+import { useAuth } from '../authProvider';
+import { ILoginInputs } from '../models/models';
+import { fireLogin, fireLogout } from '../services/auth.service';
+
+// import GoogleButton from 'react-google-button';
 
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -55,36 +59,52 @@ const SignIn: FC = () => {
     const history = useHistory();
 
     const [errMsg, setErrMsg] = useState<string>("");
+    const { user } = useAuth();
+
 
     const emailSignIn = async (data: ILoginInputs) => {
         await fireLogin(data.email, data.password)
-            .then((res) => {
+            .then(() => {
                 setErrMsg("")
                 history.push('/workspace')
             })
-            .catch((err) => {
+            .catch(() => {
                 setErrMsg("Wrong Email/Password.")
             })
     };
 
-    const gSignIn = () => {
-        console.log('Google Sign In');
+    // const gSignIn = () => {
+    //     console.log('Google Sign In');
 
-    }
+    // }
 
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
-            <div className={classes.paper}>
-                <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon />
-                </Avatar>
-                <Typography variant="h5">
-                    Sign in
-        </Typography>
-                <form className={classes.form} onSubmit={
-                    handleSubmit(emailSignIn)
-                }>
+            { user &&
+                <div className={classes.paper}>
+                    <Typography variant="h4" color="initial">You are already logged in!</Typography>
+                    <Button
+                        type="button"
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        className={classes.submit}
+                        onClick={() => fireLogout()}
+                    >
+                        Logout?
+                </Button>
+                </div>
+            }
+            { !user &&
+                <div className={classes.paper}>
+                    <Avatar className={classes.avatar}>
+                        <LockOutlinedIcon />
+                    </Avatar>
+                    <Typography variant="h5">
+                        Sign in
+                    </Typography>
+                <form className={classes.form} onSubmit={handleSubmit(emailSignIn)}>
                     {errMsg &&
                         <Alert className={classes.errorMsg} severity="error">
                             {errMsg}
@@ -100,9 +120,6 @@ const SignIn: FC = () => {
                         autoComplete="email"
                         type="email"
                         {...register("email", { pattern: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/ })} />
-                    {/* {errors.email &&
-                        <Typography variant="subtitle1">Invalid email address</Typography>
-                    } */}
                     <TextField
                         variant="outlined"
                         margin="normal"
@@ -113,9 +130,6 @@ const SignIn: FC = () => {
                         id="password"
                         // autoComplete="current-password"
                         {...register("password", { pattern: /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6,}$/ })} />
-                    {/* {errors.password &&
-                        <Typography variant="subtitle1">Password must be minimun 6 characters and include both digits and letters.</Typography>
-                    } */}
                     <Button
                         type="submit"
                         fullWidth
@@ -124,8 +138,8 @@ const SignIn: FC = () => {
                         className={classes.submit}
                     >
                         Sign In
-          </Button>
-                    <GoogleButton
+                        </Button>
+                    {/* <GoogleButton
                         style={{
                             width: '100%',
                             filter: 'brightness(95%)',
@@ -133,12 +147,12 @@ const SignIn: FC = () => {
 
                         }}
                         onClick={gSignIn}
-                    />
+                    /> */}
                     <Grid container>
                         <Grid item xs>
                             <Link href="/passreset" variant="body2">
                                 Forgot password?
-              </Link>
+                                </Link>
                         </Grid>
                         <Grid item>
                             <Link href="/signup" variant="body2">
@@ -148,6 +162,7 @@ const SignIn: FC = () => {
                     </Grid>
                 </form>
             </div>
+            }
         </Container>
     );
 }

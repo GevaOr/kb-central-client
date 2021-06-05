@@ -9,11 +9,11 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { FC } from 'react';
-import GoogleButton from 'react-google-button';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useHistory } from 'react-router';
 import { IRegisterInputs } from '../models/models';
 import { fireRegister } from '../services/auth.service'
+// import GoogleButton from 'react-google-button';
 
 const useStyles = makeStyles((theme: Theme) => ({
     paper: {
@@ -57,9 +57,9 @@ const SignUp: FC = (props) => {
         history.push('/')
     };
 
-    const gSignUp = () => {
-        console.log('Google Sign Up');
-    }
+    // const gSignUp = () => {
+    //     console.log('Google Sign Up');
+    // }
 
     return (
         <Container component="main" maxWidth="xs">
@@ -137,7 +137,7 @@ const SignUp: FC = (props) => {
                     >
                         Sign Up
           </Button>
-                    <GoogleButton
+                    {/* <GoogleButton
                         style={{
                             width: '100%',
                             filter: 'brightness(95%)',
@@ -146,7 +146,7 @@ const SignUp: FC = (props) => {
                         }}
                         label="Sign up with Google"
                         onClick={gSignUp}
-                    />
+                    /> */}
                     <Grid container justify="flex-end">
                         <Grid item>
                             <Link href="signin" variant="body2">

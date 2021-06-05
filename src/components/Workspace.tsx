@@ -20,13 +20,15 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import { useHistory } from 'react-router';
 import ArticleEditor from './ArticleEditor';
-
+import WorkspaceTreeView from './WorkspaceTreeView';
+import WorkspaceIconRow from './WorkspaceIconRow';
 // import WorkspaceNav from './WorkspaceNav';
 
 
 
 
-const drawerWidth = 240;
+
+const drawerWidth = 260;
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -275,7 +277,10 @@ const Workspace: FC = () => {
                     </IconButton>
                 </div>
                 <Divider />
-                {/* {"DATA HERE"} */}
+                {menuOpen ?
+                    <WorkspaceTreeView />
+                    : <WorkspaceIconRow />
+                }
             </Drawer>
             <main className={classes.content}>
                 <div className={classes.appBarSpacer} />

@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 
-const ArticleEditor: FC = (props) => {
+const ArticleEditor: FC = () => {
     const classes: ClassNameMap = useStyles();
     // const { user } = useAuth();
 
@@ -107,7 +107,7 @@ const ArticleEditor: FC = (props) => {
     //     })
     // }
 
-    const formValid = (): boolean => {
+    const isFormValid = (): boolean => {
         let valid: boolean = false;
         !title.trim() ? errors.push('title')
             : !content.trim() ? errors.push('content')
@@ -116,17 +116,20 @@ const ArticleEditor: FC = (props) => {
     }
 
     const publishArticle = (): void => {
-        if (formValid()) {
+        if (isFormValid()) {
             setErrors([]);
             console.log(article);
             /// TODO firebase
-        } return;
+            return;
+        }
+        console.log('Errors', errors);
+        alert("Title and/or content can't be empty!")
     }
 
     return (
         <form noValidate autoComplete="off" className={classes.root}>
             <div>
-                <Button onClick={() => publishArticle} variant="outlined" color="primary">Publish</Button>
+                <Button onClick={publishArticle} variant="outlined" color="primary">Publish</Button>
             </div>
             {/* <Alert hidden={!errors.includes('title')} className={classes.errorMsg} variant="standard" severity="error">
                 {titleErrorMsg}
