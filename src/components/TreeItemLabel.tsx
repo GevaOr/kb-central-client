@@ -1,7 +1,6 @@
-import { FC, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { SvgIconTypeMap, Tooltip, Typography } from '@material-ui/core';
-import { OverridableComponent } from '@material-ui/core/OverridableComponent';
+import { Tooltip, Typography } from '@material-ui/core';
 import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined';
 import { Link } from 'react-router-dom';
 
@@ -10,20 +9,17 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         treeLabelCont: {
             display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
             alignItems: 'center',
-            padding: theme.spacing(0.5),
+            // TODO stop + from expanding box
+            padding: theme.spacing(0.6),
             width: '100%',
-            justifyItems: 'space-around',
-            justifyContent: 'center',
         },
         treeIcon: {
             fontSize: 24,
             color: theme.palette.primary.main,
-            // marginLeft: theme.spacing(2)
         },
-        treeLabel: {
-            // marginLeft: theme.spacing(0.8),
-        }
     }),
 );
 interface Props {
@@ -52,8 +48,7 @@ const TreeItemLabel = (props: Props) => {
                 } */}
             <Tooltip title={props.title}>
                 <Typography
-                    className={classes.treeLabel}
-                    variant="h6"
+                    variant="body1"
                     color="initial">
                     {props.title}
                 </Typography>

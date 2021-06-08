@@ -6,6 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import { ClassNameMap } from '@material-ui/styles';
 import { IArticle } from '../models/models';
 import { Button } from '@material-ui/core';
+// import { Redirect } from 'react-router';
 // import { useAuth } from '../authProvider';
 // import Alert from '@material-ui/lab/Alert';
 
@@ -127,41 +128,46 @@ const ArticleEditor: FC = () => {
     }
 
     return (
-        <form noValidate autoComplete="off" className={classes.root}>
-            <div>
-                <Button onClick={publishArticle} variant="outlined" color="primary">Publish</Button>
-            </div>
-            {/* <Alert hidden={!errors.includes('title')} className={classes.errorMsg} variant="standard" severity="error">
+        <>
+            {/* {
+                !user && <Redirect to="/signin" />
+            } */}
+            <form noValidate autoComplete="off" className={classes.root}>
+                <div>
+                    <Button onClick={publishArticle} variant="outlined" color="primary">Publish</Button>
+                </div>
+                {/* <Alert hidden={!errors.includes('title')} className={classes.errorMsg} variant="standard" severity="error">
                 {titleErrorMsg}
             </Alert> */}
-            <TextField
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                id="standard-full-width"
-                placeholder="Title..."
-                fullWidth
-                InputProps={{ className: classes.inputTitle }}
-                InputLabelProps={{
-                    shrink: true,
-                }}
-                autoFocus
-                variant="outlined"
-            // margin="normal"
-            // label="Label"
-            // helperText="Full width!"
-            />
-            {/* <Alert hidden={!errors.includes('content')} className={classes.errorMsg} variant="filled" severity="error">
+                <TextField
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    id="standard-full-width"
+                    placeholder="Title..."
+                    fullWidth
+                    InputProps={{ className: classes.inputTitle }}
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                    autoFocus
+                    variant="outlined"
+                // margin="normal"
+                // label="Label"
+                // helperText="Full width!"
+                />
+                {/* <Alert hidden={!errors.includes('content')} className={classes.errorMsg} variant="filled" severity="error">
                 {contentErrorMsg}
             </Alert> */}
-            <ReactQuill
-                theme="snow"
-                value={content}
-                className={classes.quill}
-                modules={modules}
-                formats={formats}
-                onChange={setContent}
-            />
-        </form>
+                <ReactQuill
+                    theme="snow"
+                    value={content}
+                    className={classes.quill}
+                    modules={modules}
+                    formats={formats}
+                    onChange={setContent}
+                />
+            </form>
+        </>
     );
 }
 
