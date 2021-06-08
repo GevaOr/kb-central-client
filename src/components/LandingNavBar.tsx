@@ -15,7 +15,7 @@ const LandingNavBar: FC = () => {
                     <Link to="/">Home</Link>
                 </li>
                 <li>
-                    <Link to="/workspace">Workspace</Link>
+                    <a href="/workspace">Workspace</a>
                 </li>
                 {user
                     ? <div>

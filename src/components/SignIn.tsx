@@ -66,7 +66,7 @@ const SignIn: FC = () => {
         await fireLogin(data.email, data.password)
             .then(() => {
                 setErrMsg("")
-                history.push('/workspace')
+                history.push('/workspace');
             })
             .catch(() => {
                 setErrMsg("Wrong Email/Password.")
