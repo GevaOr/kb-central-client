@@ -9,12 +9,13 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         treeLabelCont: {
             display: 'flex',
+            width: '100%',
             flexWrap: 'wrap',
             justifyContent: 'space-between',
             alignItems: 'center',
-            // TODO stop + from expanding box
             padding: theme.spacing(0.6),
-            width: '100%',
+            // TODO stop + from expanding box (?)
+
         },
         treeIcon: {
             fontSize: 24,
@@ -46,7 +47,7 @@ const TreeItemLabel = (props: Props) => {
                     props.icon &&
                     <props.icon className={classes.treeIcon} />
                 } */}
-            <Tooltip title={props.title}>
+            <Tooltip placement="top" title={props.title}>
                 <Typography
                     variant="body1"
                     color="initial">

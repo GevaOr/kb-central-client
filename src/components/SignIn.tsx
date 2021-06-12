@@ -66,7 +66,7 @@ const SignIn: FC = () => {
         await fireLogin(data.email, data.password)
             .then(() => {
                 setErrMsg("")
-                history.push('/workspace');
+                history.push('/');
             })
             .catch(() => {
                 setErrMsg("Wrong Email/Password.")
@@ -93,6 +93,16 @@ const SignIn: FC = () => {
                         onClick={() => fireLogout()}
                     >
                         Logout?
+                </Button>
+                <Button
+                    type="button"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                    onClick={() => history.push('/')}
+                >
+                    Go Home
                 </Button>
                 </div>
             }

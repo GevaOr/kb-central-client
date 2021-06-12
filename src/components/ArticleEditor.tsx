@@ -47,6 +47,7 @@ const ArticleEditor: FC = () => {
         content: '',
         hasChildren: false,
         creatorUID: '', ////////////////////////
+        public: true, //////////////
         comments: [],
         createdAt: new Date(),
         updatedAt: new Date()

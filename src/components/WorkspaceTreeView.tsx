@@ -101,6 +101,9 @@ const WorkspaceTreeView: FC = () => {
 
                         <hr className={classes.hr} />
                     </>
+                    // TODO Personal > Private
+                    // TODO Fav
+                    // TODO My Docs
                 }
             </TreeView>
             {/* ARTICLE VIEW */}

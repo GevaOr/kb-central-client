@@ -19,10 +19,10 @@ import InputBase from '@material-ui/core/InputBase';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import { useHistory } from 'react-router';
-// import ArticleEditor from './ArticleEditor';
+import ArticleEditor from './ArticleEditor';
 import WorkspaceTreeView from './WorkspaceTreeView';
 import WorkspaceIconRow from './WorkspaceIconRow';
-import PlaceholderArticle from './PlaceholderArticle';
+// import PlaceholderArticle from './PlaceholderArticle';
 // import WorkspaceNav from './WorkspaceNav';
 
 
@@ -285,7 +285,7 @@ const Workspace: FC = () => {
             <main className={classes.content}>
                 <div className={classes.appBarSpacer} />
                 <Container maxWidth="lg" className={classes.container}>
-                    <PlaceholderArticle />
+                    <ArticleEditor />
                 </Container>
             </main>
         </div>

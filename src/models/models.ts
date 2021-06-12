@@ -12,6 +12,7 @@ export interface IArticle {
     parent?: string;
     hasChildren: boolean; // ???
     creatorUID: string;
+    public: boolean; //////////
     // children: Array<string | null>; // objectId > article
     comments: Array<string | null>; // objectId > comment
     createdAt: Date; // or string?
