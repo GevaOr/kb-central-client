@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, MouseEvent } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Tooltip, Typography } from '@material-ui/core';
 import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined';
-import { Link } from 'react-router-dom';
+import { FC } from 'react';
+// import { Link } from 'react-router-dom';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -14,8 +15,6 @@ const useStyles = makeStyles((theme: Theme) =>
             justifyContent: 'space-between',
             alignItems: 'center',
             padding: theme.spacing(0.6),
-            // TODO stop + from expanding box (?)
-
         },
         treeIcon: {
             fontSize: 24,
@@ -25,28 +24,20 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 interface Props {
     title: string,
-    articleID?: string,
-    // icon?: OverridableComponent<SvgIconTypeMap<{}, "svg">>,
+    // path: string,
+    addChild: (event: MouseEvent) => void
 }
 
-const TreeItemLabel = (props: Props) => {
+const TreeItemLabel: FC<Props> = (props) => {
     const classes = useStyles();
     const [showPlusIcon, setShowIconStyle] = useState(false);
 
     return (
         <div
             className={classes.treeLabelCont}
-            onMouseOver={() => {
-                if (props.articleID) { setShowIconStyle(true) }
-            }}
-            onMouseLeave={() => {
-                if (props.articleID) { setShowIconStyle(false) }
-            }}
+            onMouseOver={() => setShowIconStyle(true)}
+            onMouseLeave={() => setShowIconStyle(false)}
         >
-            {/* {
-                    props.icon &&
-                    <props.icon className={classes.treeIcon} />
-                } */}
             <Tooltip placement="top" title={props.title}>
                 <Typography
                     variant="body1"
@@ -55,15 +46,12 @@ const TreeItemLabel = (props: Props) => {
                 </Typography>
             </Tooltip>
             {
-                showPlusIcon &&
-                <Link
-                    to={
-                        props.articleID + `/new` //////
-                    }>
-                    <Tooltip title="Add child">
+                showPlusIcon ?
+                    <Tooltip hidden={!showPlusIcon} onClick={props.addChild} placement="right" title="Add child">
                         <AddBoxOutlinedIcon className={classes.treeIcon} />
                     </Tooltip>
-                </Link>
+                    :
+                    null
             }
         </div>
     )

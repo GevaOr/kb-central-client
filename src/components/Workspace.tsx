@@ -188,6 +188,8 @@ const Workspace: FC = () => {
         history.push("/")
     }
 
+    const toggleEditor = () => { };
+
     useEffect(() => {
         user ? setIsAuth(true) : setIsAuth(false)
     }, [user])
@@ -278,14 +280,17 @@ const Workspace: FC = () => {
                 </div>
                 <Divider />
                 {menuOpen ?
-                    <WorkspaceTreeView />
+                    <WorkspaceTreeView
+                        toggleEditor={toggleEditor}
+                    // location={""}
+                    />
                     : <WorkspaceIconRow />
                 }
             </Drawer>
             <main className={classes.content}>
                 <div className={classes.appBarSpacer} />
                 <Container maxWidth="lg" className={classes.container}>
-                    <ArticleEditor />
+                    <ArticleEditor parentUrl="" />
                 </Container>
             </main>
         </div>

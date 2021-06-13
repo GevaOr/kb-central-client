@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-const SignUp: FC = (props) => {
+const SignUp: FC = () => {
     const classes = useStyles();
     const {
         register,

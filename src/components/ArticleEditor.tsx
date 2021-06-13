@@ -6,8 +6,8 @@ import TextField from '@material-ui/core/TextField';
 import { ClassNameMap } from '@material-ui/styles';
 import { IArticle } from '../models/models';
 import { Button } from '@material-ui/core';
-// import { Redirect } from 'react-router';
-// import { useAuth } from '../authProvider';
+import { createNewPublicArticle } from '../services/articles.service';
+import { useAuth } from '../authProvider';
 // import Alert from '@material-ui/lab/Alert';
 
 
@@ -34,24 +34,35 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
+interface Props {
+    articleData?: IArticle;
+    parentUrl: string;
+}
 
-const ArticleEditor: FC = () => {
+
+const ArticleEditor: FC<Props> = (props: Props) => {
     const classes: ClassNameMap = useStyles();
-    // const { user } = useAuth();
+    const { user } = useAuth();
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [errors, setErrors] = useState<Array<string | null>>([])
-    const [article, setArticle] = useState<IArticle>({
+
+    const newArticle: IArticle = {
+        key: '',
         title: '',
         content: '',
-        hasChildren: false,
-        creatorUID: '', ////////////////////////
-        public: true, //////////////
+        children: [],
+        creatorUID: user ? user.uid : '',
+        location: '', //////////////
         comments: [],
         createdAt: new Date(),
         updatedAt: new Date()
-    });
+    }
+
+    const [article, setArticle] = useState<IArticle>(
+        props.articleData ? props.articleData : newArticle
+    );
 
     // const titleErrorMsg: string = 'You gotta have a title!'
     // const contentErrorMsg: string = 'Nothing to write?\nCome back later and '
@@ -117,10 +128,11 @@ const ArticleEditor: FC = () => {
         return valid
     }
 
-    const publishArticle = (): void => {
+    const publishArticle = async () => {
         if (isFormValid()) {
             setErrors([]);
-            console.log(article);
+            // console.log(article);
+            await createNewPublicArticle(article);
             /// TODO firebase
             return;
         }

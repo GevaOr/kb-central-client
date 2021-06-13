@@ -6,18 +6,15 @@ export interface IUserData {
 }
 
 export interface IArticle {
-    key?: string | null; // objectId > article
+    key: string;
     title: string;
-    content: string; // html
-    parent?: string;
-    hasChildren: boolean; // ???
+    content: string;
+    children?: object;
     creatorUID: string;
-    public: boolean; //////////
-    // children: Array<string | null>; // objectId > article
-    comments: Array<string | null>; // objectId > comment
+    location: string;
+    comments: Array<IComment | null>;
     createdAt: Date; // or string?
     updatedAt: Date; // or string?
-    // level: number;
 }
 
 export interface IUserDetails {

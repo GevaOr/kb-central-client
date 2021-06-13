@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-const WorkspaceNav: FC = (props) => {
+const WorkspaceNav: FC = () => {
     const classes: ClassNameMap = useStyles();
     const { user, logout } = useAuth();
     const [isAuth, setIsAuth] = useState<boolean>();
