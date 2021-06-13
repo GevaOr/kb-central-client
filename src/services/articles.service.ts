@@ -9,6 +9,10 @@ export const getArticleByPath = (path: string): Promise<firebase.database.DataSn
     return db.ref(path).get();
 };
 
+export const createNewArticleOnPath = (path: string, article: IArticle) => {
+    return articles.child(path).push(article);
+};
+
 export const getPublicArticles = (): Promise<firebase.database.DataSnapshot> => {
     return publicArticles.get();
 };

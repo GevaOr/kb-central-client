@@ -1,4 +1,4 @@
-import { ChangeEvent, MouseEvent, FC, useState, useEffect } from 'react';
+import { ChangeEvent, FC, useState, useEffect } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -8,9 +8,14 @@ import DescriptionIcon from '@material-ui/icons/Description';
 import LockRoundedIcon from '@material-ui/icons/LockRounded';
 import PersonRoundedIcon from '@material-ui/icons/PersonRounded';
 import PublicRoundedIcon from '@material-ui/icons/PublicRounded';
+import AddBoxIcon from '@material-ui/icons/AddBox';
 import TreeItemLabel from './TreeItemLabel';
 import { useAuth } from '../authProvider';
-import { useRouteMatch, useHistory, useLocation } from 'react-router-dom';
+import {
+    useRouteMatch,
+    useHistory,
+    // useLocation 
+} from 'react-router-dom';
 import { getInternalArticles, getPublicArticles, getUserPrivateArticles } from '../services/articles.service';
 
 enum SpaceNames {
@@ -36,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
-    toggleEditor: () => void;
+    toggleEditor: (location: string) => void;
 }
 
 const WorkspaceTreeView: FC<Props> = ({ toggleEditor }) => {
@@ -46,16 +51,16 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor }) => {
     const [selectedArticle, setSelectedArticle] = useState<string>('');
     const [selectedSpace, setSelectedSpace] = useState<string>(SpaceNames.public);
 
-    const [articleTree, setArticleTree] = useState<object>();
+    const [articleTree, setArticleTree] = useState<object | null>(null);
 
     const history = useHistory();
     const { url } = useRouteMatch();
-    const { pathname } = useLocation();
+    // const { pathname } = useLocation();
 
-    const addArticleToSpace = (spaceName: string) => {
-        pushSpaceNameToHistory(spaceName);
-        console.log(url);
-    }
+    // const addArticleToSpace = (spaceName: string) => {
+    //     pushSpaceNameToHistory(spaceName);
+    //     console.log(url);
+    // }
 
 
     const handleArticleToggle = (event: ChangeEvent<{}>, nodeIds: string[]) => {
@@ -78,32 +83,39 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor }) => {
         pushSpaceNameToHistory(spaceName);
     };
 
+    const toggleArticleEditor = (event: ChangeEvent<{}>): void => {
+        handleSpaceSelect(event, selectedSpace);
+        toggleEditor(selectedSpace); ///////////
+    }
+
 
     const renderTree = (nodes: any) => {
-        const key = Object.keys(nodes)[0];
-        const article = nodes[key];
-        const title = article.title;
-        let children: Array<object | null> = []
-        if (article.children) {
-            children = Object.keys(article.children).map(key => {
-                const child = {
-                    [key]: article.children[key]
+        // Not working - needs to iterate nodes and child nodes.
+        const keys = Object.keys(nodes);
+        for (const key in keys) {
+            const article = nodes[key];
+            const title = article.title;
+            let children: Array<object | null> = []
+            if (article.children) {
+                children = Object.keys(article.children).map(key => {
+                    const child = {
+                        [key]: article.children[key]
+                    }
+                    return child;
                 }
-                return child;
+                )
             }
-            )
+            return (
+                <TreeItem key={key} nodeId={key} label={
+                    <TreeItemLabel addChild={(e) => console.log(e)} title={title} />
+                }>
+                    {
+                        (children.length) ?
+                            children.map((node: any) => renderTree(node))
+                            : null}
+                </TreeItem>
+            );
         }
-        return (
-
-            <TreeItem key={key} nodeId={key} label={
-                <TreeItemLabel addChild={(e) => console.log(e)} title={title} />
-            }>
-                {
-                    (children.length > 0) ?
-                        children.map((node: any) => renderTree(node))
-                        : null}
-            </TreeItem>
-        );
     };
 
     useEffect(() => {
@@ -119,11 +131,12 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor }) => {
                     user && setArticleTree((await getUserPrivateArticles(user.uid)).val());
                     break;
             }
+            console.log(articleTree);
             setSelectedArticle('');
-    };
-        fetchArticles();
+        };
+        user && fetchArticles();
         // articleTree && renderTree(articleTree)
-    }, [selectedSpace, user])
+    }, [selectedSpace])
 
 
     return (
@@ -133,6 +146,7 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor }) => {
             <TreeView
                 selected={selectedSpace}
                 onNodeSelect={handleSpaceSelect}
+                defaultSelected={SpaceNames.public}
             >
                 {
                     user &&
@@ -140,7 +154,7 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor }) => {
                         <TreeItem
                             nodeId={SpaceNames.public}
                             label={
-                                <TreeItemLabel addChild={() => addArticleToSpace(SpaceNames.public)} title="Public articles" />
+                                <TreeItemLabel noPlus title="Public articles" />
                             }
                             icon={<PublicRoundedIcon />}
                         >
@@ -148,7 +162,7 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor }) => {
                         <TreeItem
                             nodeId={SpaceNames.internal}
                             label={
-                                <TreeItemLabel addChild={() => addArticleToSpace(SpaceNames.internal)} title="Internal articles" />
+                                <TreeItemLabel noPlus title="Internal articles" />
                             }
                             icon={<LockRoundedIcon />}
                         >
@@ -156,7 +170,7 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor }) => {
                         <TreeItem
                             nodeId={SpaceNames.private}
                             label={
-                                <TreeItemLabel addChild={() => addArticleToSpace(SpaceNames.private)} title="Private articles" />
+                                <TreeItemLabel noPlus title="Private articles" />
                             }
                             icon={<PersonRoundedIcon />}
                         >
@@ -165,6 +179,15 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor }) => {
                         {/* TODO Fav */}
 
                         <hr className={classes.hr} />
+                        <TreeItem
+                            nodeId="addArticle"
+                            label={
+                                <TreeItemLabel noPlus title="Add parent article" />
+                            }
+                            icon={<AddBoxIcon />}
+                            onClick={(e) => toggleArticleEditor(e)}
+                        >
+                        </TreeItem>
                     </>
                 }
             </TreeView>
@@ -178,8 +201,9 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor }) => {
                 onNodeToggle={handleArticleToggle}
                 onNodeSelect={handleArticleSelect}
             >
-                {articleTree &&
+                {articleTree ?
                     renderTree(articleTree)
+                    : null
                 }
             </TreeView>
         </div>

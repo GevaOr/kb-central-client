@@ -18,10 +18,12 @@ import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import { useHistory } from 'react-router';
+import { useHistory, useRouteMatch, Switch, Route } from 'react-router-dom';
 import ArticleEditor from './ArticleEditor';
+import ArticleView from './ArticleView';
 import WorkspaceTreeView from './WorkspaceTreeView';
 import WorkspaceIconRow from './WorkspaceIconRow';
+import { IArticle } from '../models/models';
 // import PlaceholderArticle from './PlaceholderArticle';
 // import WorkspaceNav from './WorkspaceNav';
 
@@ -156,14 +158,18 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Workspace: FC = () => {
     const classes: ClassNameMap = useStyles();
+    const history = useHistory();
+    const { url } = useRouteMatch();
     const { user } = useAuth();
     const [isAuth, setIsAuth] = useState<boolean>();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     // const open = Boolean(anchorEl);
     const [menuOpen, setMenuOpen] = useState(true);
+    // const [currentParentUrl, setCurrentParentUrl] = useState<string>(url);
     const optionsOpen = Boolean(anchorEl);
-    const history = useHistory();
 
+
+    const [currentArticleData, setCurrentArticleData] = useState<IArticle | null>(null);
     // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     //     setIsAuth(event.target.checked);
     // };
@@ -176,7 +182,6 @@ const Workspace: FC = () => {
         setAnchorEl(null);
     };
 
-
     const handleDrawerOpen = () => {
         setMenuOpen(true);
     };
@@ -188,7 +193,10 @@ const Workspace: FC = () => {
         history.push("/")
     }
 
-    const toggleEditor = () => { };
+    const toggleEditor = (newLocation: string): void => {
+        setCurrentArticleData(null);
+        history.push(`${url}/${newLocation}/new`)
+    };
 
     useEffect(() => {
         user ? setIsAuth(true) : setIsAuth(false)
@@ -282,7 +290,6 @@ const Workspace: FC = () => {
                 {menuOpen ?
                     <WorkspaceTreeView
                         toggleEditor={toggleEditor}
-                    // location={""}
                     />
                     : <WorkspaceIconRow />
                 }
@@ -290,7 +297,14 @@ const Workspace: FC = () => {
             <main className={classes.content}>
                 <div className={classes.appBarSpacer} />
                 <Container maxWidth="lg" className={classes.container}>
-                    <ArticleEditor parentUrl="" />
+                    <Switch>
+                        <Route exact path={`${url}/:space/:article?/new`}>
+                            <ArticleEditor articleData={currentArticleData} />
+                        </Route>
+                        <Route path={`${url}/:location`}>
+                            <ArticleView data={currentArticleData} />
+                        </Route>
+                    </Switch>
                 </Container>
             </main>
         </div>

@@ -6,9 +6,9 @@ import TextField from '@material-ui/core/TextField';
 import { ClassNameMap } from '@material-ui/styles';
 import { IArticle } from '../models/models';
 import { Button } from '@material-ui/core';
-import { createNewPublicArticle } from '../services/articles.service';
+import { createNewArticleOnPath } from '../services/articles.service';
 import { useAuth } from '../authProvider';
-// import Alert from '@material-ui/lab/Alert';
+import { Redirect, useHistory, useParams } from 'react-router-dom'
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -35,14 +35,21 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
-    articleData?: IArticle;
-    parentUrl: string;
+    articleData: IArticle | null;
+    // parentUrl: string;
+}
+
+interface Params {
+    space: string;
+    article?: string;
 }
 
 
 const ArticleEditor: FC<Props> = (props: Props) => {
     const classes: ClassNameMap = useStyles();
     const { user } = useAuth();
+    const history = useHistory();
+    const params: Params = useParams();
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
@@ -54,7 +61,7 @@ const ArticleEditor: FC<Props> = (props: Props) => {
         content: '',
         children: [],
         creatorUID: user ? user.uid : '',
-        location: '', //////////////
+        location: props.articleData ? props.articleData.location : '', //////////////
         comments: [],
         createdAt: new Date(),
         updatedAt: new Date()
@@ -131,27 +138,23 @@ const ArticleEditor: FC<Props> = (props: Props) => {
     const publishArticle = async () => {
         if (isFormValid()) {
             setErrors([]);
-            // console.log(article);
-            await createNewPublicArticle(article);
-            /// TODO firebase
+            const space: string = params.space;
+            await createNewArticleOnPath(space, article);
+            history.push(`workspace/${space}`);
             return;
         }
         console.log('Errors', errors);
         alert("Title and/or content can't be empty!")
     }
 
+    if (!user) { return <Redirect to="/workspace" /> }
+
     return (
         <>
-            {/* {
-                !user && <Redirect to="/signin" />
-            } */}
             <form noValidate autoComplete="off" className={classes.root}>
                 <div>
                     <Button onClick={publishArticle} variant="outlined" color="primary">Publish</Button>
                 </div>
-                {/* <Alert hidden={!errors.includes('title')} className={classes.errorMsg} variant="standard" severity="error">
-                {titleErrorMsg}
-            </Alert> */}
                 <TextField
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
@@ -164,13 +167,7 @@ const ArticleEditor: FC<Props> = (props: Props) => {
                     }}
                     autoFocus
                     variant="outlined"
-                // margin="normal"
-                // label="Label"
-                // helperText="Full width!"
                 />
-                {/* <Alert hidden={!errors.includes('content')} className={classes.errorMsg} variant="filled" severity="error">
-                {contentErrorMsg}
-            </Alert> */}
                 <ReactQuill
                     theme="snow"
                     value={content}

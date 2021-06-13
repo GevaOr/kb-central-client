@@ -2,6 +2,7 @@ import { FC } from 'react'
 import {
     Route,
     Switch,
+    BrowserRouter
 } from 'react-router-dom';
 import Logout from './Logout';
 import LandingNavBar from './LandingNavBar';
@@ -24,18 +25,20 @@ const HomePage: FC = () => {
     const classes = useStyles();
 
     return (
-        <div className={classes.landingMain}>
-            <CssBaseline />
-            <LandingNavBar />
-            <Switch>
-                <Route exact path="/" component={HomeWelcome} />
-                <Route exact path="/signin" component={SignIn} />
-                <Route exact path="/signup" component={SignUp} />
-                <Route exact path="/passreset" component={PassReset} />
-                <Route exact path="/logout" component={Logout} />
-            </Switch>
-            <LandingFooter />
-        </div>
+        <BrowserRouter>
+            <div className={classes.landingMain}>
+                <CssBaseline />
+                <LandingNavBar />
+                <Switch>
+                    <Route exact path="/" component={HomeWelcome} />
+                    <Route exact path="/signin" component={SignIn} />
+                    <Route exact path="/signup" component={SignUp} />
+                    <Route exact path="/passreset" component={PassReset} />
+                    <Route exact path="/logout" component={Logout} />
+                </Switch>
+                <LandingFooter />
+            </div>
+        </BrowserRouter>
     )
 }
 

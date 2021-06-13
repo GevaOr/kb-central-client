@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import { Link as MuiLink } from '@material-ui/core/';
 import { Link } from 'react-router-dom';
 import { makeStyles, Theme } from '@material-ui/core/styles';
+import { fireLogout } from '../services/auth.service';
 
 const useStyles = makeStyles((theme: Theme) => ({
     appBar: {
@@ -66,8 +67,8 @@ const LandingNavBar: FC = () => {
                         </MuiLink>
                         {user
                             ?
-                            <Button color="primary" variant="outlined" className={classes.muiLink}>
-                                <Link to="/logout" className={classes.routerLink}>Logout</Link>
+                            <Button onClick={fireLogout} color="primary" variant="outlined" className={classes.muiLink}>
+                                Logout
                             </Button>
                             :
                             <Button color="primary" variant="outlined" className={classes.muiLink}>

@@ -24,8 +24,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 interface Props {
     title: string,
-    // path: string,
-    addChild: (event: MouseEvent) => void
+    noPlus?: boolean,
+    addChild?: (event: MouseEvent) => void
 }
 
 const TreeItemLabel: FC<Props> = (props) => {
@@ -45,13 +45,18 @@ const TreeItemLabel: FC<Props> = (props) => {
                     {props.title}
                 </Typography>
             </Tooltip>
-            {
-                showPlusIcon ?
-                    <Tooltip hidden={!showPlusIcon} onClick={props.addChild} placement="right" title="Add child">
-                        <AddBoxOutlinedIcon className={classes.treeIcon} />
-                    </Tooltip>
-                    :
-                    null
+
+            {!props.noPlus &&
+                <>
+                {
+                    showPlusIcon ?
+                        <Tooltip hidden={!showPlusIcon} onClick={props.addChild} placement="right" title="Add child">
+                            <AddBoxOutlinedIcon className={classes.treeIcon} />
+                        </Tooltip>
+                        :
+                        null
+                }
+                </>
             }
         </div>
     )
