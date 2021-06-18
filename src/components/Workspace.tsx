@@ -200,6 +200,12 @@ const Workspace: FC = () => {
         history.push(`${url}/${newLocation}/new`)
     };
 
+    const toggleArticle = (newLocation: string, data: IArticle | null): void => {
+        // console.log(newLocation, data);
+        setCurrentArticleData(data);
+        history.push(`${url}/${newLocation}`)
+    };
+
     useEffect(() => {
         user ? setIsAuth(true) : setIsAuth(false)
     }, [user])
@@ -299,6 +305,7 @@ const Workspace: FC = () => {
                 {menuOpen ?
                     <WorkspaceTreeView
                         toggleEditor={toggleEditor}
+                        toggleArticle={toggleArticle}
                     />
                     : <WorkspaceIconRow />
                 }

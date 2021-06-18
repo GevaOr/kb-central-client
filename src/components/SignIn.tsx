@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -60,11 +60,6 @@ const SignIn: FC = () => {
 
     const [errMsg, setErrMsg] = useState<string>("");
     const { user } = useAuth();
-
-    const { path } = useRouteMatch();
-
-    console.log(path);
-
 
     const emailSignIn = async (data: ILoginInputs) => {
         await fireLogin(data.email, data.password)

@@ -32,9 +32,9 @@ const HomePage: FC = () => {
                 <LandingNavBar />
                 <Switch>
                     <Route exact path={`${url}/`} component={HomeWelcome} />
-                    <Route exact path={`${url}/signin`} component={SignIn} />
+                    <Route path={`${url}signin`} component={SignIn} />
                     {/* <Route exact path="/passreset" component={PassReset} /> */}
-                    <Route exact path={`${url}/logout`} component={Logout} />
+                    <Route exact path={`${url}logout`} component={Logout} />
                 </Switch>
                 <LandingFooter />
             </div>

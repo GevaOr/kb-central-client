@@ -25,12 +25,14 @@ const useStyles = makeStyles((theme: Theme) =>
 interface Props {
     title: string,
     noPlus?: boolean,
+    textColor?: "inherit" | "initial" | "primary" | "secondary" | "textPrimary" | "textSecondary" | "error" | undefined,
     addChild?: (event: MouseEvent) => void
 }
 
 const TreeItemLabel: FC<Props> = (props) => {
     const classes = useStyles();
     const [showPlusIcon, setShowIconStyle] = useState(false);
+    const color = props.textColor ? props.textColor : "initial"
 
     return (
         <div
@@ -41,7 +43,7 @@ const TreeItemLabel: FC<Props> = (props) => {
             <Tooltip placement="top" title={props.title}>
                 <Typography
                     variant="body1"
-                    color="initial">
+                    color={color}>
                     {props.title}
                 </Typography>
             </Tooltip>

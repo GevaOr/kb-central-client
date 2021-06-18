@@ -17,6 +17,7 @@ import {
     // useLocation 
 } from 'react-router-dom';
 import { getInternalArticles, getPublicArticles, getUserPrivateArticles } from '../services/articles.service';
+import { IArticle } from '../models/models';
 
 export enum SpaceNames {
     public = 'public',
@@ -45,9 +46,10 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
     toggleEditor: (location: string) => void;
+    toggleArticle: (location: string, data: IArticle | null) => void;
 }
 
-const WorkspaceTreeView: FC<Props> = ({ toggleEditor }) => {
+const WorkspaceTreeView: FC<Props> = ({ toggleEditor, toggleArticle }) => {
     const classes = useStyles();
     const { user } = useAuth();
     const [expanded, setExpanded] = useState<string[]>([]);
@@ -71,7 +73,6 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor }) => {
     };
 
     const handleArticleSelect = (event: ChangeEvent<{}>, nodeId: string) => {
-        // TODO Open article on main
         setSelectedArticle(nodeId);
     };
 
@@ -90,12 +91,22 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor }) => {
         toggleEditor(selectedSpace); ///////////
     }
 
+    const toggleArticleView = (key: string, data: IArticle): void => {
+        // handleSpaceSelect(event, selectedSpace);
+        // setSelectedArticle('');
+        const location = `${selectedSpace}/${key}`
+        toggleArticle(location, data); ///////////
+    }
+
 
     const renderTree = (nodes: any) => {
+        if (!nodes) {
+            return;
+        }
         const keys = Object.keys(nodes);
         return keys.map(key => {
             const article = nodes[key];
-            const title = article.title;
+            const { title } = article
             let children: Array<object | null> = []
             if (article.children) {
                 children = Object.keys(article.children).map(key => {
@@ -107,7 +118,7 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor }) => {
                 )
             }
             return (
-                <TreeItem key={key} nodeId={key} label={
+                <TreeItem onClick={() => toggleArticleView(key, article)} key={key} nodeId={key} label={
                     <TreeItemLabel addChild={(e) => console.log(e)} title={title} />
                 }>
                     {
@@ -144,17 +155,18 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor }) => {
                     setArticleTree((await getPublicArticles()).val());
                     break;
                 case SpaceNames.internal:
-                    setArticleTree((await getInternalArticles()).val());
+                    user && setArticleTree((await getInternalArticles()).val());
                     break;
                 case SpaceNames.private:
                     user && setArticleTree((await getUserPrivateArticles(user.uid)).val());
                     break;
             }
+            pushSpaceNameToHistory(selectedSpace);
             setSelectedArticle('');
         };
-        user && fetchArticles();
+        fetchArticles();
         // articleTree && renderTree(articleTree)
-    }, [selectedSpace, user])
+    }, [selectedSpace])
 
 
     return (
@@ -200,9 +212,9 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor }) => {
                         <TreeItem
                             nodeId="addArticle"
                             label={
-                                <TreeItemLabel noPlus title="Add article" />
+                                <TreeItemLabel textColor="primary" noPlus title="Add article" />
                             }
-                            icon={<AddBoxIcon />}
+                            icon={<AddBoxIcon color="primary" />}
                             onClick={(e) => toggleArticleEditor(e)}
                         >
                         </TreeItem>
@@ -210,6 +222,7 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor }) => {
                     </>
                 }
             </TreeView>
+
             {/* ARTICLE VIEW */}
             <TreeView
                 defaultCollapseIcon={<ExpandMoreIcon />}
@@ -220,9 +233,8 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor }) => {
                 onNodeToggle={handleArticleToggle}
                 onNodeSelect={handleArticleSelect}
             >
-                {articleTree ?
+                {
                     renderTree(articleTree)
-                    : null
                 }
             </TreeView>
         </div>

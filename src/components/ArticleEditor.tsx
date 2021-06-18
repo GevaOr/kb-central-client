@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState, useRef, useLayoutEffect } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -9,11 +9,10 @@ import { createNewArticleOnPath, createNewPrivateArticle } from '../services/art
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { useAuth } from '../authProvider';
-import { Redirect, useHistory, useParams, useRouteMatch } from 'react-router-dom';
+import { Redirect, useHistory, useParams } from 'react-router-dom';
 import DeleteIcon from '@material-ui/icons/Delete'; import PublishIcon from '@material-ui/icons/Publish';
 import Typography from '@material-ui/core/Typography'
 import { SpaceNames } from './WorkspaceTreeView';
-// import { firebase } from '../firebase';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -62,7 +61,7 @@ const ArticleEditor: FC<Props> = (props: Props) => {
     const { user } = useAuth();
     const history = useHistory();
     const params: Params = useParams();
-    const { url, path } = useRouteMatch();
+    // const { url, path } = useRouteMatch();
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
@@ -170,7 +169,11 @@ const ArticleEditor: FC<Props> = (props: Props) => {
     }
 
     const deleteArticle = async () => {
-        console.log("DELETE ARTICLE");
+        // eslint-disable-next-line no-restricted-globals
+        if (confirm('Are you sure?')) {
+            console.log('delete me');
+
+        }
     }
 
     if (!user) { return <Redirect to="/workspace" /> }

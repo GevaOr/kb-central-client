@@ -5,6 +5,8 @@ import { FC } from 'react';
 import { IArticle } from '../models/models';
 // import { Link } from 'react-router-dom';
 import PlaceholderArticle from './PlaceholderArticle'
+import parse from 'html-react-parser';
+import Typography from '@material-ui/core/Typography'
 
 
 // const useStyles = makeStyles((theme: Theme) =>
@@ -34,7 +36,10 @@ const ArticleView: FC<Props> = (props) => {
         <div>
             {
                 props.data ?
-                    "ARTICLE VIEW" // TODO article
+                    <>
+                        <Typography variant="h2" color="initial">{props.data.title}</Typography>
+                        {parse(props.data.content)}
+                    </>
                     :
                     <PlaceholderArticle />
             }

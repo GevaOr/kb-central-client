@@ -1,14 +1,14 @@
 import { useContext, useEffect, useState, createContext, FC } from 'react'
 import { firebase } from './firebase';
 import { IUserData } from './models/models';
-import { fireLogout } from './services/auth.service';
 import { getUserDataByKey } from './services/users.service';
+// import { fireLogout } from './services/auth.service';
 
 interface IAuthContext {
     user: firebase.User | null;
     userData: IUserData | null;
     isLoading: boolean;
-    logout: () => void;
+    // logout: () => void;
 }
 
 const auth = firebase.auth()
@@ -17,7 +17,7 @@ const AuthContext = createContext<IAuthContext>({
     user: null,
     userData: null,
     isLoading: true,
-    logout: () => { },
+    // logout: () => { },
 })
 
 export const AuthProvider: FC = ({ children }) => {
@@ -44,7 +44,7 @@ export const AuthProvider: FC = ({ children }) => {
     })
     return (
         <AuthContext.Provider
-            value={{ user, userData, isLoading, logout: () => fireLogout }}>
+            value={{ user, userData, isLoading }}>
             {children}
         </AuthContext.Provider>
     )

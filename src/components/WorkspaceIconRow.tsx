@@ -36,33 +36,29 @@ const WorkspaceIconRow = () => {
             justify="space-between"
             alignItems="center"
         >
-            { user &&
+            {user &&
                 <Grid
                     container
                     direction="column"
                     justify="flex-start"
                     alignItems="center"
                 >
-                    <Grid item>
-                        <Link to="#" >
-                            <Tooltip title="New private article">
-                                <EnhancedEncryptionRoundedIcon className={classes.navIcon} />
-                            </Tooltip>
-                        </Link>
+                <Grid item onClick={() => {
+                    console.log('boom')
+                }}>
+                    <Tooltip title="New private article">
+                        <EnhancedEncryptionRoundedIcon className={classes.navIcon} />
+                    </Tooltip>
                     </Grid>
-                    <Grid item>
-                        <Link to="#" >
-                            <Tooltip title="New public article">
-                                <AddBoxRoundedIcon className={classes.navIcon} />
-                            </Tooltip>
-                        </Link>
+                <Grid item>
+                    <Tooltip title="New public article">
+                        <AddBoxRoundedIcon className={classes.navIcon} />
+                    </Tooltip>
                     </Grid>
-                    <Grid item>
-                        <Link to="#" >
-                            <Tooltip title="New personal article">
-                                <PersonAddRoundedIcon className={classes.navIcon} />
-                            </Tooltip>
-                        </Link>
+                <Grid item>
+                    <Tooltip title="New personal article">
+                        <PersonAddRoundedIcon className={classes.navIcon} />
+                    </Tooltip>
                     </Grid>
                 </Grid>
             }
