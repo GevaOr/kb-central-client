@@ -18,7 +18,7 @@ import {
 } from 'react-router-dom';
 import { getInternalArticles, getPublicArticles, getUserPrivateArticles } from '../services/articles.service';
 
-enum SpaceNames {
+export enum SpaceNames {
     public = 'public',
     internal = 'internal',
     private = 'private',
@@ -37,6 +37,9 @@ const useStyles = makeStyles((theme: Theme) =>
             marginLeft: theme.spacing(-1),
 
         },
+        spacer: {
+            marginBottom: theme.spacing(0.8),
+        }
     }),
 );
 
@@ -64,12 +67,10 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor }) => {
 
 
     const handleArticleToggle = (event: ChangeEvent<{}>, nodeIds: string[]) => {
-        console.log('Toggle:', nodeIds)
         setExpanded(nodeIds);
     };
 
     const handleArticleSelect = (event: ChangeEvent<{}>, nodeId: string) => {
-        console.log('Article select:', nodeId)
         // TODO Open article on main
         setSelectedArticle(nodeId);
     };
@@ -85,14 +86,14 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor }) => {
 
     const toggleArticleEditor = (event: ChangeEvent<{}>): void => {
         handleSpaceSelect(event, selectedSpace);
+        setSelectedArticle('');
         toggleEditor(selectedSpace); ///////////
     }
 
 
     const renderTree = (nodes: any) => {
-        // Not working - needs to iterate nodes and child nodes.
         const keys = Object.keys(nodes);
-        for (const key in keys) {
+        return keys.map(key => {
             const article = nodes[key];
             const title = article.title;
             let children: Array<object | null> = []
@@ -115,8 +116,26 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor }) => {
                             : null}
                 </TreeItem>
             );
-        }
+        });
     };
+
+    // const fetchPublicArticles = async () => {
+    //     return (await getPublicArticles()).val();
+    // };
+
+    // const fetchInternalArticles = async () => {
+    //     if (user) {
+    //         return (await getInternalArticles()).val();
+    //     }
+    //     return fetchPublicArticles();
+    // };
+    // const fetchUserPrivateArticles = async () => {
+    //     if (user) {
+    //         return (await getUserPrivateArticles(user.uid)).val();
+    //     }
+    //     return fetchPublicArticles();
+    // };
+
 
     useEffect(() => {
         const fetchArticles = async () => {
@@ -131,12 +150,11 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor }) => {
                     user && setArticleTree((await getUserPrivateArticles(user.uid)).val());
                     break;
             }
-            console.log(articleTree);
             setSelectedArticle('');
         };
         user && fetchArticles();
         // articleTree && renderTree(articleTree)
-    }, [selectedSpace])
+    }, [selectedSpace, user])
 
 
     return (
@@ -182,12 +200,13 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor }) => {
                         <TreeItem
                             nodeId="addArticle"
                             label={
-                                <TreeItemLabel noPlus title="Add parent article" />
+                                <TreeItemLabel noPlus title="Add article" />
                             }
                             icon={<AddBoxIcon />}
                             onClick={(e) => toggleArticleEditor(e)}
                         >
                         </TreeItem>
+                        <div className={classes.spacer} />
                     </>
                 }
             </TreeView>

@@ -18,10 +18,12 @@ export interface IArticle {
 }
 
 export interface IUserDetails {
-    firstName: string
-    lastName: string
-    email: string
-    password: string
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    isAdmin: boolean;
+
 }
 
 // export interface IAccount {
@@ -29,8 +31,8 @@ export interface IUserDetails {
 //     owner: string; // objectId > user
 //     name: string;
 //     articles: {
-//         external: Array<string | null>, // objectId > article
-//         internal: Array<string | null>, // objectId > article
+//         external: Array<string | null>; // objectId > article
+//         internal: Array<string | null>; // objectId > article
 //     }; // objectId > user
 // }
 
@@ -42,15 +44,16 @@ export interface IComment {
 }
 
 export interface ILoginInputs {
-    email: string,
-    password: string,
+    email: string;
+    password: string;
 };
 
 export interface IRegisterInputs {
-    firstName: string,
-    lastName: string,
-    email: string,
-    password: string,
-    // passwordConfirm: string,
-    // profilePicUrl: string,
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    isAdmin: boolean;
+    // passwordConfirm: string;
+    // profilePicUrl: string;
 };

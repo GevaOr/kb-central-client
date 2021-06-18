@@ -5,11 +5,15 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import { ClassNameMap } from '@material-ui/styles';
 import { IArticle } from '../models/models';
-import { Button } from '@material-ui/core';
-import { createNewArticleOnPath } from '../services/articles.service';
+import { createNewArticleOnPath, createNewPrivateArticle } from '../services/articles.service';
+import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { useAuth } from '../authProvider';
-import { Redirect, useHistory, useParams } from 'react-router-dom'
-
+import { Redirect, useHistory, useParams, useRouteMatch } from 'react-router-dom';
+import DeleteIcon from '@material-ui/icons/Delete'; import PublishIcon from '@material-ui/icons/Publish';
+import Typography from '@material-ui/core/Typography'
+import { SpaceNames } from './WorkspaceTreeView';
+// import { firebase } from '../firebase';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -18,6 +22,14 @@ const useStyles = makeStyles((theme: Theme) =>
             flexWrap: 'wrap',
             flexFlow: 'column',
             padding: theme.spacing(1),
+        },
+        btnGroup: {
+            alignSelf: "flex-end",
+            marginBottom: theme.spacing(2),
+        },
+        btn: {
+            display: "flex",
+            justifyContent: "space-between",
         },
         inputTitle: {
             fontSize: 24,
@@ -50,6 +62,7 @@ const ArticleEditor: FC<Props> = (props: Props) => {
     const { user } = useAuth();
     const history = useHistory();
     const params: Params = useParams();
+    const { url, path } = useRouteMatch();
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
@@ -139,12 +152,25 @@ const ArticleEditor: FC<Props> = (props: Props) => {
         if (isFormValid()) {
             setErrors([]);
             const space: string = params.space;
-            await createNewArticleOnPath(space, article);
-            history.push(`workspace/${space}`);
+            let resp;
+            if (space === SpaceNames.private) {
+                if (user) {
+                    resp = (await createNewPrivateArticle(article, user.uid).get())
+                }
+
+            }
+            resp = (await createNewArticleOnPath(space, article).get());
+            console.log(resp.val()); //////
+            console.log(resp.key); ////
+            history.goBack()
             return;
         }
         console.log('Errors', errors);
         alert("Title and/or content can't be empty!")
+    }
+
+    const deleteArticle = async () => {
+        console.log("DELETE ARTICLE");
     }
 
     if (!user) { return <Redirect to="/workspace" /> }
@@ -152,9 +178,17 @@ const ArticleEditor: FC<Props> = (props: Props) => {
     return (
         <>
             <form noValidate autoComplete="off" className={classes.root}>
-                <div>
-                    <Button onClick={publishArticle} variant="outlined" color="primary">Publish</Button>
-                </div>
+                <ButtonGroup size="large" variant="text" className={classes.btnGroup}>
+                    <Button className={classes.btn} onClick={publishArticle}>
+                        <PublishIcon />
+                        <Typography variant="body1">Publish</Typography>
+                    </Button>
+                    <Button className={classes.btn} onClick={deleteArticle}>
+                        <DeleteIcon />
+                        <Typography variant="body1">Delete</Typography>
+                    </Button>
+                    {/* <Button>Share</Button> */}
+                </ButtonGroup>
                 <TextField
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}

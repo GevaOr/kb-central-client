@@ -16,20 +16,20 @@ const fireLogout = (): Promise<void> => {
     return auth.signOut();
 };
 
-const fireRegister = async (userDetails: IRegisterInputs, isAdmin?: boolean) => {
-    const userData: IUserData = newUserData
-    if (isAdmin) {
-        userData.isAdmin = true;
-    };
+const fireRegister = async (userDetails: IRegisterInputs) => {
+    const originalUser = auth.currentUser
+    const userData: IUserData = newUserData;
+    userData.isAdmin = userDetails.isAdmin ? userDetails.isAdmin : false;
     await auth.createUserWithEmailAndPassword(userDetails.email, userDetails.password).then(async (cred) => {
         auth.currentUser?.updateProfile({
             displayName: constructDisplayName(userDetails.firstName, userDetails.lastName)
         })
         if (cred.user) {
-            await createNewUser(userData, cred.user.uid);
+            createNewUser(userData, cred.user.uid);
         }
+        await auth.updateCurrentUser(originalUser)
     })
-        .catch(err => console.log(err))
+        .catch(err => console.log("Add User Error", err))
 };
 
 const constructDisplayName = (firstName: string, lastName: string | null = null): string => {

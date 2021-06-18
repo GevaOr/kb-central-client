@@ -18,12 +18,14 @@ import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import { useHistory, useRouteMatch, Switch, Route } from 'react-router-dom';
+import { useHistory, useRouteMatch, Switch, Route, Redirect } from 'react-router-dom';
 import ArticleEditor from './ArticleEditor';
 import ArticleView from './ArticleView';
 import WorkspaceTreeView from './WorkspaceTreeView';
 import WorkspaceIconRow from './WorkspaceIconRow';
 import { IArticle } from '../models/models';
+import AddUser from './AddUser';
+import { fireLogout } from '../services/auth.service';
 // import PlaceholderArticle from './PlaceholderArticle';
 // import WorkspaceNav from './WorkspaceNav';
 
@@ -160,7 +162,7 @@ const Workspace: FC = () => {
     const classes: ClassNameMap = useStyles();
     const history = useHistory();
     const { url } = useRouteMatch();
-    const { user } = useAuth();
+    const { user, userData } = useAuth();
     const [isAuth, setIsAuth] = useState<boolean>();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     // const open = Boolean(anchorEl);
@@ -258,11 +260,18 @@ const Workspace: FC = () => {
                                 open={optionsOpen}
                                 onClose={handleOptionsClose}
                             >
-                                <MenuItem onClick={handleOptionsClose}>My account</MenuItem>
+                                {
+                                    userData?.isAdmin &&
+                                    <MenuItem onClick={async () => {
+                                        await handleOptionsClose();
+                                        history.push(
+                                            `${url}/addusers`
+                                        );
+                                    }}>Add User</MenuItem>
+                                }
                                 <MenuItem onClick={async () => {
-                                    history.push(
-                                        '/logout'
-                                    );
+                                    await fireLogout();
+                                    history.push("/")
                                 }
                                 }>Log out</MenuItem>
                             </Menu>
@@ -298,6 +307,9 @@ const Workspace: FC = () => {
                 <div className={classes.appBarSpacer} />
                 <Container maxWidth="lg" className={classes.container}>
                     <Switch>
+                        <Route exact path={`${url}/addusers`}>
+                            {userData?.isAdmin ? <AddUser /> : <Redirect to="/" />}
+                        </Route>
                         <Route exact path={`${url}/:space/:article?/new`}>
                             <ArticleEditor articleData={currentArticleData} />
                         </Route>

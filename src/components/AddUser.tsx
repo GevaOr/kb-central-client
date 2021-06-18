@@ -3,16 +3,19 @@ import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
-import Link from '@material-ui/core/Link';
+// import Link from '@material-ui/core/Link';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useHistory } from 'react-router';
 import { IRegisterInputs } from '../models/models';
 import { fireRegister } from '../services/auth.service'
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import { useState } from 'react';
 // import GoogleButton from 'react-google-button';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -38,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-const SignUp: FC = () => {
+const AddUser: FC = () => {
     const classes = useStyles();
     const {
         register,
@@ -51,11 +54,18 @@ const SignUp: FC = () => {
     // const resetValues = { firstName: "", lastName: "", email: "", password: "" }
 
     const history = useHistory();
+    const [addAsAdmin, setAddAsAdmin] = useState<boolean>()
 
     const emailSignUp: SubmitHandler<IRegisterInputs> = async (data: IRegisterInputs) => {
         await fireRegister(data);
-        history.push('/')
+        history.push('/workspace')
+        // console.log(data);
+
     };
+
+    useEffect(() => {
+        setAddAsAdmin(false)
+    }, [])
 
     // const gSignUp = () => {
     //     console.log('Google Sign Up');
@@ -69,8 +79,8 @@ const SignUp: FC = () => {
                     <LockOutlinedIcon />
                 </Avatar>
                 <Typography variant="h5">
-                    Sign Up
-        </Typography>
+                    Add new user
+                </Typography>
                 <form className={classes.form} onSubmit={
                     handleSubmit(emailSignUp)
                 }>
@@ -127,6 +137,13 @@ const SignUp: FC = () => {
                                 <Typography className={classes.errorMsg} variant="subtitle1">Password must be minimun 6 characters and include both digits and letters.</Typography>
                             }
                         </Grid>
+                        <Grid item xs={12}>
+                            <FormControlLabel
+                                control={<Checkbox value={addAsAdmin} onChange={() => setAddAsAdmin(!addAsAdmin)} color="primary" />}
+                                label="Add as admin?"
+                                {...register("isAdmin")}
+                            />
+                        </Grid>
                     </Grid>
                     <Button
                         type="submit"
@@ -135,8 +152,8 @@ const SignUp: FC = () => {
                         color="primary"
                         className={classes.submit}
                     >
-                        Sign Up
-          </Button>
+                        Add User
+                    </Button>
                     {/* <GoogleButton
                         style={{
                             width: '100%',
@@ -147,17 +164,17 @@ const SignUp: FC = () => {
                         label="Sign up with Google"
                         onClick={gSignUp}
                     /> */}
-                    <Grid container justify="flex-end">
+                    {/* <Grid container justify="flex-end">
                         <Grid item>
                             <Link href="signin" variant="body2">
                                 Already have an account? Sign in
               </Link>
                         </Grid>
-                    </Grid>
+                    </Grid> */}
                 </form>
             </div>
         </Container>
     );
 }
 
-export default SignUp;
+export default AddUser;

@@ -4,6 +4,7 @@
 import { FC } from 'react';
 import { IArticle } from '../models/models';
 // import { Link } from 'react-router-dom';
+import PlaceholderArticle from './PlaceholderArticle'
 
 
 // const useStyles = makeStyles((theme: Theme) =>
@@ -20,7 +21,7 @@ import { IArticle } from '../models/models';
 // );
 
 interface Props {
-    data: IArticle | null,
+    data?: IArticle | null,
     // space?: boolean,
     // addChild?: (event: MouseEvent) => void
 }
@@ -35,7 +36,7 @@ const ArticleView: FC<Props> = (props) => {
                 props.data ?
                     "ARTICLE VIEW" // TODO article
                     :
-                    "NO DATA" // TODO Placeholder Article
+                    <PlaceholderArticle />
             }
         </div>
     )

@@ -2,13 +2,13 @@ import { FC } from 'react'
 import {
     Route,
     Switch,
-    BrowserRouter
+    BrowserRouter,
+    useRouteMatch
 } from 'react-router-dom';
 import Logout from './Logout';
 import LandingNavBar from './LandingNavBar';
-import PassReset from './PassReset';
+// import PassReset from './PassReset';
 import SignIn from './SignIn';
-import SignUp from './SignUp';
 import LandingFooter from './LandingFooter';
 import HomeWelcome from './HomeWelcome';
 import { makeStyles, Theme } from '@material-ui/core/styles';
@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const HomePage: FC = () => {
     const classes = useStyles();
+    const { url } = useRouteMatch();
 
     return (
         <BrowserRouter>
@@ -30,11 +31,10 @@ const HomePage: FC = () => {
                 <CssBaseline />
                 <LandingNavBar />
                 <Switch>
-                    <Route exact path="/" component={HomeWelcome} />
-                    <Route exact path="/signin" component={SignIn} />
-                    <Route exact path="/signup" component={SignUp} />
-                    <Route exact path="/passreset" component={PassReset} />
-                    <Route exact path="/logout" component={Logout} />
+                    <Route exact path={`${url}/`} component={HomeWelcome} />
+                    <Route exact path={`${url}/signin`} component={SignIn} />
+                    {/* <Route exact path="/passreset" component={PassReset} /> */}
+                    <Route exact path={`${url}/logout`} component={Logout} />
                 </Switch>
                 <LandingFooter />
             </div>
