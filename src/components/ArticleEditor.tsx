@@ -5,15 +5,14 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import { ClassNameMap } from '@material-ui/styles';
 import { IArticle } from '../models/models';
-import { createNewArticleOnPath, createNewPrivateArticle, updateArticle } from '../services/articles.service';
+import { createNewArticleOnPath } from '../services/articles.service';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { useAuth } from '../authProvider';
-import { Redirect, useHistory, useParams, useRouteMatch } from 'react-router-dom';
+import { Redirect, useParams, useHistory } from 'react-router-dom';
 import DeleteIcon from '@material-ui/icons/Delete'; import PublishIcon from '@material-ui/icons/Publish';
 import Typography from '@material-ui/core/Typography'
 import { SpaceNames } from './WorkspaceTreeView';
-import firebase from 'firebase';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -51,30 +50,34 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
-    articleData: IArticle | null;
+    articleData: IArticle | null,
+    resetArticleData: () => void,
     // parentUrl: string;
 }
 
 interface Params {
     space: string;
-    article?: string;
+    parent?: string;
+    articleKey: string;
 }
 
 
 const ArticleEditor: FC<Props> = (props: Props) => {
     const classes: ClassNameMap = useStyles();
-    const { user } = useAuth();
-    const history = useHistory();
-    const params: Params = useParams();
-    const { url, path } = useRouteMatch();
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [errors, setErrors] = useState<Array<string | null>>([])
 
+    const { user } = useAuth();
+
+    const params: Params = useParams();
+    const history = useHistory();
+
+
     const newArticle: IArticle = {
-        key: null,
-        location: null,
+        key: '',
+        location: '',
         title: '',
         content: '',
         children: [],
@@ -84,9 +87,15 @@ const ArticleEditor: FC<Props> = (props: Props) => {
         updatedAt: new Date()
     }
 
-    const [article, setArticle] = useState<IArticle>(
-        props.articleData ? props.articleData : newArticle
-    );
+    const editArticle: IArticle | null = props.articleData;
+
+    const setInitialData = () => {
+        if (params.articleKey && editArticle) {
+            return editArticle
+        } return newArticle
+    }
+
+    const [article, setArticle] = useState<IArticle>(setInitialData());
 
     // const titleErrorMsg: string = 'You gotta have a title!'
     // const contentErrorMsg: string = 'Nothing to write?\nCome back later and '
@@ -126,24 +135,6 @@ const ArticleEditor: FC<Props> = (props: Props) => {
         'clean'
     ]
 
-    // const onChangeTitle = (value: string): void => {
-    //     setArticle(article => {
-    //         return {
-    //             ...article,
-    //             title: value
-    //         }
-    //     })
-    // }
-
-    // const onChangeContent = (value: string): void => {
-    //     setArticle(article => {
-    //         return {
-    //             ...article,
-    //             content: value
-    //         }
-    //     })
-    // }
-
     const isFormValid = (): boolean => {
         let valid: boolean = false;
         !title.trim() ? errors.push('title')
@@ -156,27 +147,38 @@ const ArticleEditor: FC<Props> = (props: Props) => {
         if (isFormValid()) {
             setErrors([]);
             const spaceName: string = params.space;
-            const articleKey: string | null = params.article ? params.article : null
-            let path: string = `${spaceName}`
-            path = articleKey ? path + `/${articleKey}/children` : path;
+            let path: string = '';
             if (user) {
                 if (spaceName === SpaceNames.private) {
-                    await createNewPrivateArticle(article, articleKey, user.uid);
+                    if (props.articleData) {
+                        path = `${props.articleData.location}/children`;
+                    } else {
+                        path = `articles/${spaceName}/${user.uid}`
+                    }
+                    await createNewArticleOnPath(path, article);
                 } else {
+                    if (props.articleData) {
+                        path = `${props.articleData.location}/children`;
+                    } else {
+                        path = `articles/${spaceName}`
+                    }
                     await createNewArticleOnPath(path, article);
                 };
             };
-            history.goBack();
+            props.resetArticleData();
+            history.push('/workspace');
             return;
         }
         console.log('Errors', errors);
         alert("Title and/or content can't be empty!")
     }
 
-    const deleteArticle = async () => {
+    const clearData = async () => {
         // eslint-disable-next-line no-restricted-globals
         if (confirm('Are you sure?')) {
-            console.log('delete me');
+            setContent('');
+            setTitle('');
+            setArticle(newArticle);
         }
     }
 
@@ -191,9 +193,9 @@ const ArticleEditor: FC<Props> = (props: Props) => {
                         <PublishIcon />
                         <Typography variant="body1">Publish</Typography>
                     </Button>
-                    <Button className={classes.btn} onClick={deleteArticle}>
+                    <Button className={classes.btn} onClick={clearData}>
                         <DeleteIcon />
-                        <Typography variant="body1">Delete</Typography>
+                        <Typography variant="body1">Clear</Typography>
                     </Button>
                     {/* <Button>Share</Button> */}
                 </ButtonGroup>

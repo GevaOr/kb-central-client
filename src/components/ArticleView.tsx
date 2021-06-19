@@ -7,7 +7,11 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { useAuth } from '../authProvider';
-import { useRouteMatch, useParams } from 'react-router';
+import {
+    useRouteMatch,
+    // useParams
+} from 'react-router';
+import { deleteArticleByPath } from '../services/articles.service';
 
 
 
@@ -35,21 +39,26 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
-    data?: IArticle | null,
-    addChild: (e: any) => void
+    data: IArticle | null,
+    addChild: (parent: string) => void,
 }
 
-interface Params {
-    space: string;
-    article?: string;
-}
+// interface Params {
+//     space: string;
+//     parent?: string;
+// }
 
 const ArticleView: FC<Props> = (props) => {
     const classes = useStyles();
     const { user } = useAuth();
     const { url } = useRouteMatch();
-    const params: Params = useParams();
-    // const [showPlusIcon, setShowIconStyle] = useState(false);
+
+    const deleteArticle = () => {
+        if (props.data) {
+            const location = props.data.location;
+            deleteArticleByPath(location);
+        }
+    }
 
     return (
         <div >
@@ -59,18 +68,16 @@ const ArticleView: FC<Props> = (props) => {
                         {user &&
                             <div className={classes.btnCont}>
                                 <ButtonGroup size="large" variant="text" className={classes.btnGroup}>
-                                    <Button className={classes.btn} onClick={() => props.addChild(url)}>
+                                <Button className={classes.btn} onClick={() => props.addChild(url)}>
                                         <Typography variant="body1">Add Child</Typography>
                                     </Button>
-                                    <Button className={classes.btn} onClick={(e) => console.log(e)
+                                {/* <Button className={classes.btn} onClick={(e) => console.log(e)
                                     }>
                                         <Typography variant="body1">Edit</Typography>
-                                    </Button>
-                                    <Button className={classes.btn} onClick={(e) => console.log(e)
-                                    }>
+                                    </Button> */}
+                                <Button className={classes.btn} onClick={deleteArticle}>
                                         <Typography variant="body1">Delete</Typography>
-                                    </Button>
-                                    {/* <Button>Share</Button> */}
+                                </Button>
                                 </ButtonGroup>
                             </div>
                         }

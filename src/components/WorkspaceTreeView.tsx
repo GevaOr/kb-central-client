@@ -46,10 +46,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
     toggleEditor: (location: string) => void;
-    toggleArticle: (location: string, data: IArticle | null) => void;
+    toggleArticle: (location: string, data: IArticle | null) => void,
+    resetArticleData: () => void,
 }
 
-const WorkspaceTreeView: FC<Props> = ({ toggleEditor, toggleArticle }) => {
+const WorkspaceTreeView: FC<Props> = ({ toggleEditor, toggleArticle, resetArticleData }) => {
     const classes = useStyles();
     const { user } = useAuth();
     const [expanded, setExpanded] = useState<string[]>([]);
@@ -60,12 +61,6 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor, toggleArticle }) => {
 
     const history = useHistory();
     const { url } = useRouteMatch();
-    // const { pathname } = useLocation();
-
-    // const addArticleToSpace = (spaceName: string) => {
-    //     pushSpaceNameToHistory(spaceName);
-    //     console.log(url);
-    // }
 
 
     const handleArticleToggle = (event: ChangeEvent<{}>, nodeIds: string[]) => {
@@ -88,14 +83,12 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor, toggleArticle }) => {
     const toggleArticleEditor = (event: ChangeEvent<{}>): void => {
         handleSpaceSelect(event, selectedSpace);
         setSelectedArticle('');
-        toggleEditor(selectedSpace); ///////////
+        toggleEditor(selectedSpace);
     }
 
     const toggleArticleView = (key: string, data: IArticle): void => {
-        // handleSpaceSelect(event, selectedSpace);
-        // setSelectedArticle('');
         const location = `${selectedSpace}/${key}`
-        toggleArticle(location, data); ///////////
+        toggleArticle(location, data);
     }
 
 
@@ -130,42 +123,25 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor, toggleArticle }) => {
         });
     };
 
-    // const fetchPublicArticles = async () => {
-    //     return (await getPublicArticles()).val();
-    // };
-
-    // const fetchInternalArticles = async () => {
-    //     if (user) {
-    //         return (await getInternalArticles()).val();
-    //     }
-    //     return fetchPublicArticles();
-    // };
-    // const fetchUserPrivateArticles = async () => {
-    //     if (user) {
-    //         return (await getUserPrivateArticles(user.uid)).val();
-    //     }
-    //     return fetchPublicArticles();
-    // };
-
+    const fetchArticles = async () => {
+        switch (selectedSpace) {
+            case SpaceNames.public:
+                setArticleTree((await getPublicArticles()).val());
+                break;
+            case SpaceNames.internal:
+                user && setArticleTree((await getInternalArticles()).val());
+                break;
+            case SpaceNames.private:
+                user && setArticleTree((await getUserPrivateArticles(user.uid)).val());
+                break;
+        }
+        resetArticleData();
+        pushSpaceNameToHistory(selectedSpace);
+        setSelectedArticle('');
+    };
 
     useEffect(() => {
-        const fetchArticles = async () => {
-            switch (selectedSpace) {
-                case SpaceNames.public:
-                    setArticleTree((await getPublicArticles()).val());
-                    break;
-                case SpaceNames.internal:
-                    user && setArticleTree((await getInternalArticles()).val());
-                    break;
-                case SpaceNames.private:
-                    user && setArticleTree((await getUserPrivateArticles(user.uid)).val());
-                    break;
-            }
-            pushSpaceNameToHistory(selectedSpace);
-            setSelectedArticle('');
-        };
         fetchArticles();
-        // articleTree && renderTree(articleTree)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedSpace])
 

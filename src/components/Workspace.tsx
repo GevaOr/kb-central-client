@@ -174,7 +174,7 @@ const Workspace: FC = () => {
     const searchQuery = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (user) {
-            getAllArticlesByTitle(query)
+            getAllArticlesByTitle(query, user.uid)
         } else {
             getPublicArticlesByTitle(query)
         }
@@ -199,13 +199,11 @@ const Workspace: FC = () => {
         history.push("/")
     }
 
-    const addChildPage = (currentLocation: string): void => {
-        // console.log("toggle add child page", e); ///////////////
-        history.push(`${currentLocation}/new`);
+    const addChildPage = (location: string): void => {
+        history.push(`${location}/new`);
     }
 
     const toggleEditor = (newLocation: string): void => {
-        setCurrentArticleData(null);
         history.push(`${url}/${newLocation}/new`);
     };
 
@@ -318,6 +316,7 @@ const Workspace: FC = () => {
                     <WorkspaceTreeView
                         toggleEditor={toggleEditor}
                         toggleArticle={toggleArticle}
+                        resetArticleData={() => setCurrentArticleData(null)}
                     />
                     : <WorkspaceIconRow toggleEditor={toggleEditor} />
                 }
@@ -329,8 +328,17 @@ const Workspace: FC = () => {
                         <Route exact path={`${url}/addusers`}>
                             {userData?.isAdmin ? <AddUser /> : <Redirect to="/" />}
                         </Route>
-                        <Route exact path={`${url}/:space/:article?/new`}>
-                            <ArticleEditor articleData={currentArticleData} />
+                        <Route exact path={`${url}/:space/:parent?/new`}>
+                            <ArticleEditor
+                                articleData={currentArticleData}
+                                resetArticleData={() => setCurrentArticleData(null)}
+                            />
+                        </Route>
+                        <Route exact path={`${url}/:space/:articleKey/edit`}>
+                            <ArticleEditor
+                                articleData={currentArticleData}
+                                resetArticleData={() => setCurrentArticleData(null)}
+                            />
                         </Route>
                         <Route path={`${url}/:space/:article?`}>
                             <ArticleView addChild={addChildPage} data={currentArticleData} />
