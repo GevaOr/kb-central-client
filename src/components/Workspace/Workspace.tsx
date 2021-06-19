@@ -188,6 +188,7 @@ const Workspace: FC = () => {
     }
 
     const toggleSearchResults = (results: FlattenedArticleArr): void => {
+        console.log("Search results:", results);
         setSearchResults(results);
         history.push(`${url}/search?query=${query}`)
     }
