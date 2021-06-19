@@ -1,23 +1,23 @@
-import { ChangeEvent, FC, useState, useEffect } from 'react';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
+import { useHistory, useRouteMatch } from 'react-router-dom';
+
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import TreeView from '@material-ui/lab/TreeView';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import AddBoxIcon from '@material-ui/icons/AddBox';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import TreeItem from '@material-ui/lab/TreeItem';
 import DescriptionIcon from '@material-ui/icons/Description';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import LockRoundedIcon from '@material-ui/icons/LockRounded';
 import PersonRoundedIcon from '@material-ui/icons/PersonRounded';
 import PublicRoundedIcon from '@material-ui/icons/PublicRounded';
-import AddBoxIcon from '@material-ui/icons/AddBox';
-import TreeItemLabel from './TreeItemLabel';
-import { useAuth } from '../authProvider';
+import TreeItem from '@material-ui/lab/TreeItem';
+import TreeView from '@material-ui/lab/TreeView';
+
+import { useAuth } from '../../../authProvider';
+import { IArticle } from '../../../models/models';
 import {
-    useRouteMatch,
-    useHistory,
-    // useLocation 
-} from 'react-router-dom';
-import { getInternalArticles, getPublicArticles, getUserPrivateArticles } from '../services/articles.service';
-import { IArticle } from '../models/models';
+    getInternalArticles, getPublicArticles, getUserPrivateArticles
+} from '../../../services/articles.service';
+import TreeItemLabel from './TreeItemLabel';
 
 export enum SpaceNames {
     public = 'public',
@@ -142,7 +142,7 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor, toggleArticle, resetArticl
 
     useEffect(() => {
         fetchArticles();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedSpace])
 
 

@@ -1,15 +1,17 @@
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Tooltip from '@material-ui/core/Tooltip';
-import HomeRoundedIcon from '@material-ui/icons/HomeRounded';
-import { Link } from 'react-router-dom';
-import AddBoxRoundedIcon from '@material-ui/icons/AddBoxRounded';
-import EnhancedEncryptionRoundedIcon from '@material-ui/icons/EnhancedEncryptionRounded';
-import PersonAddRoundedIcon from '@material-ui/icons/PersonAddRounded';
-import ContactSupportRoundedIcon from '@material-ui/icons/ContactSupportRounded';
-import { useAuth } from '../authProvider';
 import { FC } from 'react';
-import { SpaceNames } from './WorkspaceTreeView';
+import { Link } from 'react-router-dom';
+
+import Grid from '@material-ui/core/Grid';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import Tooltip from '@material-ui/core/Tooltip';
+import AddBoxRoundedIcon from '@material-ui/icons/AddBoxRounded';
+import ContactSupportRoundedIcon from '@material-ui/icons/ContactSupportRounded';
+import EnhancedEncryptionRoundedIcon from '@material-ui/icons/EnhancedEncryptionRounded';
+import HomeRoundedIcon from '@material-ui/icons/HomeRounded';
+import PersonAddRoundedIcon from '@material-ui/icons/PersonAddRounded';
+
+import { useAuth } from '../../authProvider';
+import { SpaceNames } from './TreeView/WorkspaceTreeView';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -52,27 +54,27 @@ const WorkspaceIconRow: FC<Props> = (props) => {
                     justify="flex-start"
                     alignItems="center"
                 >
-                <Grid item className={classes.newArticleIcons} onClick={() => {
-                    props.toggleEditor(SpaceNames.public)
-                }}>
-                    <Tooltip title={`New ${SpaceNames.public} article`}>
-                        <AddBoxRoundedIcon className={classes.navIcon} />
-                    </Tooltip>
+                    <Grid item className={classes.newArticleIcons} onClick={() => {
+                        props.toggleEditor(SpaceNames.public)
+                    }}>
+                        <Tooltip title={`New ${SpaceNames.public} article`}>
+                            <AddBoxRoundedIcon className={classes.navIcon} />
+                        </Tooltip>
                     </Grid>
-                <Grid item className={classes.newArticleIcons} onClick={() => {
-                    props.toggleEditor(SpaceNames.internal)
-                }}>
-                    <Tooltip title={`New ${SpaceNames.internal} article`}>
-                        <EnhancedEncryptionRoundedIcon className={classes.navIcon} />
-                    </Tooltip>
+                    <Grid item className={classes.newArticleIcons} onClick={() => {
+                        props.toggleEditor(SpaceNames.internal)
+                    }}>
+                        <Tooltip title={`New ${SpaceNames.internal} article`}>
+                            <EnhancedEncryptionRoundedIcon className={classes.navIcon} />
+                        </Tooltip>
                     </Grid>
 
-                <Grid item className={classes.newArticleIcons} onClick={() => {
-                    props.toggleEditor(SpaceNames.private)
-                }}>
-                    <Tooltip title={`New ${SpaceNames.private} article`}>
-                        <PersonAddRoundedIcon className={classes.navIcon} />
-                    </Tooltip>
+                    <Grid item className={classes.newArticleIcons} onClick={() => {
+                        props.toggleEditor(SpaceNames.private)
+                    }}>
+                        <Tooltip title={`New ${SpaceNames.private} article`}>
+                            <PersonAddRoundedIcon className={classes.navIcon} />
+                        </Tooltip>
                     </Grid>
                 </Grid>
             }

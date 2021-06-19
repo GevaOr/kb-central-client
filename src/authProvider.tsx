@@ -1,7 +1,9 @@
-import { useContext, useEffect, useState, createContext, FC } from 'react'
+import { createContext, FC, useContext, useEffect, useState } from 'react';
+
 import { firebase } from './firebase';
 import { IUserData } from './models/models';
 import { getUserDataByKey } from './services/users.service';
+
 // import { fireLogout } from './services/auth.service';
 
 interface IAuthContext {

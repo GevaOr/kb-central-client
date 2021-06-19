@@ -1,7 +1,8 @@
-import firebase from "firebase";
-import "firebase/auth"
-import "firebase/database";
-import "@firebase/storage";
+import 'firebase/auth';
+import 'firebase/database';
+import '@firebase/storage';
+
+import firebase from 'firebase';
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -24,15 +25,3 @@ export {
     auth,
     // storage 
 };
-
-
-// STORAGE EX
-// const files = [ 'image1.png', 'image2.png' ]; 
-// files.map( filename => {
-//     storage
-//       .ref( `/covers/${filename}` )
-//       .getDownloadURL()
-//       .then( url => {
-//         console.log( "Got download url: ", url );
-//       });
-// });

@@ -1,38 +1,37 @@
-import { FC, useEffect, useState } from 'react'
 import clsx from 'clsx';
-import { makeStyles, Theme, fade } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
+import { FC, useEffect, useState } from 'react';
+import { Redirect, Route, Switch, useHistory, useRouteMatch } from 'react-router-dom';
+
 import AppBar from '@material-ui/core/AppBar';
+import Container from '@material-ui/core/Container';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Divider from '@material-ui/core/Divider';
+import Drawer from '@material-ui/core/Drawer';
+import IconButton from '@material-ui/core/IconButton';
+import InputBase from '@material-ui/core/InputBase';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import { fade, makeStyles, Theme } from '@material-ui/core/styles';
+import { ClassNameMap } from '@material-ui/core/styles/withStyles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import Container from '@material-ui/core/Container';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import { ClassNameMap } from '@material-ui/core/styles/withStyles';
-import { useAuth } from '../authProvider';
 import { AccountCircle } from '@material-ui/icons';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
-import InputBase from '@material-ui/core/InputBase';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import { useHistory, useRouteMatch, Switch, Route, Redirect } from 'react-router-dom';
-import ArticleEditor from './ArticleEditor';
-import ArticleView from './ArticleView';
-import WorkspaceTreeView from './WorkspaceTreeView';
-import WorkspaceIconRow from './WorkspaceIconRow';
-import { IArticle } from '../models/models';
+
+import { useAuth } from '../../authProvider';
+import { IArticle } from '../../models/models';
+import {
+    FlattenedArticleArr, getAllArticlesByTitle, getPublicArticlesByTitle
+} from '../../services/articles.service';
+import { fireLogout } from '../../services/auth.service';
+import ArticleEditor from '../Article/ArticleEditor';
+import ArticleView from '../Article/ArticleView';
 import AddUser from './AddUser';
-import { fireLogout } from '../services/auth.service';
-import { getAllArticlesByTitle, getPublicArticlesByTitle } from '../services/articles.service';
-// import PlaceholderArticle from './PlaceholderArticle';
-// import WorkspaceNav from './WorkspaceNav';
-
-
-
-
+import SearchResults from './SearchResults';
+import WorkspaceTreeView from './TreeView/WorkspaceTreeView';
+import WorkspaceIconRow from './WorkspaceIconRow';
 
 const drawerWidth = 260;
 
@@ -167,17 +166,30 @@ const Workspace: FC = () => {
     const [isAuth, setIsAuth] = useState<boolean>();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [menuOpen, setMenuOpen] = useState(true);
+
     const [query, setQuery] = useState<string>("");
+    const [searchResults, setSearchResults] = useState<FlattenedArticleArr>([]);
+
     const optionsOpen = Boolean(anchorEl);
     const [currentArticleData, setCurrentArticleData] = useState<IArticle | null>(null);
 
-    const searchQuery = (e: React.FormEvent<HTMLFormElement>) => {
+    const searchQuery = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (user) {
-            getAllArticlesByTitle(query, user.uid)
-        } else {
-            getPublicArticlesByTitle(query)
+        if (query.trim().length === 0) {
+            return;
         }
+        let results: FlattenedArticleArr = [];
+        if (user) {
+            results = await getAllArticlesByTitle(query, user.uid)
+        } else {
+            results = await getPublicArticlesByTitle(query)
+        }
+        toggleSearchResults(results);
+    }
+
+    const toggleSearchResults = (results: FlattenedArticleArr): void => {
+        setSearchResults(results);
+        history.push(`${url}/search?query=${query}`)
     }
 
     const handleMenuSelect = (event: React.MouseEvent<HTMLElement>) => {
@@ -324,7 +336,11 @@ const Workspace: FC = () => {
             <main className={classes.content}>
                 <div className={classes.appBarSpacer} />
                 <Container maxWidth="lg" className={classes.container}>
+                    {/* <SearchResults query={query} searchResults={searchResults} /> */}
                     <Switch>
+                        <Route path={`${url}/search?query=${query}`}>
+                            <SearchResults query={query} searchResults={searchResults} />
+                        </Route>
                         <Route exact path={`${url}/addusers`}>
                             {userData?.isAdmin ? <AddUser /> : <Redirect to="/" />}
                         </Route>

@@ -1,6 +1,7 @@
-import { FC, useEffect } from 'react'
+import { FC, useEffect } from 'react';
 import { useHistory } from 'react-router';
-import { fireLogout } from '../services/auth.service'
+
+import { fireLogout } from '../../services/auth.service';
 
 const Logout: FC = () => {
     const history = useHistory();

@@ -1,81 +1,58 @@
-import { SpaceNames } from './../components/WorkspaceTreeView';
-import { IArticle } from './../models/models';
-import { firebase, db } from "../firebase";
+import { SpaceNames } from '../components/Workspace/TreeView/WorkspaceTreeView';
+import { db, firebase } from '../firebase';
+import { IArticle } from '../models/models';
 
 const articles = db.ref("/articles");
 const publicArticles = articles.child(SpaceNames.public);
 const internalArticles = articles.child(SpaceNames.internal);
 
-const flattenArticles = (data: any) => {
-    const keys = Object.keys(data);
-    const flatArticles = keys.map(key => {
-        const article = data[key];
-        // const { title, location } = article
-        let children: Array<object | null> = []
-        if (article.children) {
-            children = Object.keys(article.children).map(childKey => {
-                const child = {
-                    [childKey]: article.children[childKey]
-                }
-                return child;
-            }
-            )
-            children.map(childData => {
-                return flattenArticles(childData)
-            })
-        }
-        return ({
-            [key]: article,
-            ...children
-        }
-        )
-    })
-    console.log(flatArticles);
-    return [];
+export type FlattenedArticleArr = Array<{
+    key: string, title: string, location: string
+} | null>
+
+const getFlattenedObj = (currentObj: any) => {
+    const flattenedArticleArr: FlattenedArticleArr = [];
+
+    flattenArticles(currentObj, flattenedArticleArr);
+
+    return flattenedArticleArr
 }
 
-
-//         }
-//         console.log(article);
-//         return (
-//             <TreeItem onClick= {() => toggleArticleView(key, article)} key = { key } nodeId = { key } label = {
-//         < TreeItemLabel addChild = {(e) => console.log(e)} title = { title } />
-//     }>
-//     {
-//             (children.length) ?
-//     children.map((node: any) => renderTree(node))
-//     : null}
-// </TreeItem>
-// ); 
-// }
+const flattenArticles = (currentObj: IArticle | any, flattenedArticleArr: FlattenedArticleArr) => {
+    Object.keys(currentObj).forEach((key) => {
+        const articleData = currentObj[key];
+        if (articleData.hasOwnProperty('children')) {
+            flattenArticles(articleData.children, flattenedArticleArr)
+        }
+        const { title, location } = articleData
+        flattenedArticleArr.push(
+            {
+                key: key,
+                title: title,
+                location: location
+            }
+        )
+    })
+}
 
 export const getAllArticlesByTitle = async (query: string, uid: string) => {
     const publicArticles = (await getPublicArticles()).val();
     const internalArticles = (await getInternalArticles()).val();
     const privateArticles = (await getUserPrivateArticles(uid)).val();
     const spaces: object[] = [publicArticles, internalArticles, privateArticles];
-    let allArticles: Array<object | null> = []
+    const dataArr: FlattenedArticleArr = []
     for (const space of spaces) {
-        if (space) {
-            allArticles.push(...flattenArticles(space));
-        }
+        dataArr.push(...getFlattenedObj(space))
     }
-    console.log(allArticles);
-
+    return dataArr.filter(article => article?.title.includes(query));
 };
 
-export const getPublicArticlesByTitle = (query: string) => {
-    publicArticles
-        .get()
-        .then((snapshot) => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                console.log(data); ///////
-            } else {
-                console.log("No luck...");
 
-            }
-        });
+export const getPublicArticlesByTitle = async (query: string) => {
+    const publicArticles = (await getPublicArticles()).val();
+    const dataArr: FlattenedArticleArr = []
+    dataArr.push(...getFlattenedObj(publicArticles))
+    return dataArr.filter(article => article?.title.includes(query));
 };
 
 export const getArticleByPath = (path: string): Promise<firebase.database.DataSnapshot> => {

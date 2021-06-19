@@ -1,18 +1,22 @@
+import 'react-quill/dist/quill.snow.css';
+
 import { FC, useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import { ClassNameMap } from '@material-ui/styles';
-import { IArticle } from '../models/models';
-import { createNewArticleOnPath } from '../services/articles.service';
+import { Redirect, useHistory, useParams } from 'react-router-dom';
+
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import { useAuth } from '../authProvider';
-import { Redirect, useParams, useHistory } from 'react-router-dom';
-import DeleteIcon from '@material-ui/icons/Delete'; import PublishIcon from '@material-ui/icons/Publish';
-import Typography from '@material-ui/core/Typography'
-import { SpaceNames } from './WorkspaceTreeView';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import DeleteIcon from '@material-ui/icons/Delete';
+import PublishIcon from '@material-ui/icons/Publish';
+import { ClassNameMap } from '@material-ui/styles';
+
+import { useAuth } from '../../authProvider';
+import { IArticle } from '../../models/models';
+import { createNewArticleOnPath } from '../../services/articles.service';
+import { SpaceNames } from '../Workspace/TreeView/WorkspaceTreeView';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

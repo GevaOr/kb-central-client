@@ -1,21 +1,22 @@
+import { FC, useEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { useHistory } from 'react-router';
+
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
 import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
-// import Link from '@material-ui/core/Link';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import { FC, useEffect } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { useHistory } from 'react-router';
-import { IRegisterInputs } from '../models/models';
-import { fireRegister } from '../services/auth.service'
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import { useState } from 'react';
+
+import { IRegisterInputs } from '../../models/models';
+import { fireRegister } from '../../services/auth.service';
+
 // import GoogleButton from 'react-google-button';
 
 const useStyles = makeStyles((theme: Theme) => ({

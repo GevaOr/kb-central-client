@@ -1,14 +1,16 @@
-import { FC } from 'react'
-import { useAuth } from '../authProvider';
+import { FC } from 'react';
+import { Link } from 'react-router-dom';
+
+import { Link as MuiLink } from '@material-ui/core/';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { Link as MuiLink } from '@material-ui/core/';
-import { Link } from 'react-router-dom';
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import { fireLogout } from '../services/auth.service';
+
+import { useAuth } from '../../authProvider';
+import { fireLogout } from '../../services/auth.service';
 
 const useStyles = makeStyles((theme: Theme) => ({
     appBar: {

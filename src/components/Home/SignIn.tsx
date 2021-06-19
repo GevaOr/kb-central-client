@@ -15,9 +15,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Alert from '@material-ui/lab/Alert';
 import { ClassNameMap } from '@material-ui/styles';
 
-import { useAuth } from '../authProvider';
-import { ILoginInputs } from '../models/models';
-import { fireLogin, fireLogout } from '../services/auth.service';
+import { useAuth } from '../../authProvider';
+import { ILoginInputs } from '../../models/models';
+import { fireLogin, fireLogout } from '../../services/auth.service';
 
 // import GoogleButton from 'react-google-button';
 
@@ -80,7 +80,7 @@ const SignIn: FC = () => {
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
-            { user &&
+            {user &&
                 <div className={classes.paper}>
                     <Typography variant="h4" color="initial">You are already logged in!</Typography>
                     <Button
@@ -92,20 +92,20 @@ const SignIn: FC = () => {
                         onClick={() => fireLogout()}
                     >
                         Logout?
-                </Button>
-                <Button
-                    type="button"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
-                    onClick={() => history.push('/')}
-                >
-                    Go Home
-                </Button>
+                    </Button>
+                    <Button
+                        type="button"
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        className={classes.submit}
+                        onClick={() => history.push('/')}
+                    >
+                        Go Home
+                    </Button>
                 </div>
             }
-            { !user &&
+            {!user &&
                 <div className={classes.paper}>
                     <Avatar className={classes.avatar}>
                         <LockOutlinedIcon />
@@ -113,42 +113,42 @@ const SignIn: FC = () => {
                     <Typography variant="h5">
                         Sign in
                     </Typography>
-                <form className={classes.form} onSubmit={handleSubmit(emailSignIn)}>
-                    {errMsg &&
-                        <Alert className={classes.errorMsg} severity="error">
-                            {errMsg}
-                        </Alert>
-                    }
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        fullWidth
-                        required
-                        id="email"
-                        label="Email Address"
-                        autoComplete="email"
-                        type="email"
-                        {...register("email", { pattern: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/ })} />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        fullWidth
-                        required
-                        label="Password"
-                        type="password"
-                        id="password"
-                        // autoComplete="current-password"
-                        {...register("password", { pattern: /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6,}$/ })} />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                    >
-                        Sign In
+                    <form className={classes.form} onSubmit={handleSubmit(emailSignIn)}>
+                        {errMsg &&
+                            <Alert className={classes.errorMsg} severity="error">
+                                {errMsg}
+                            </Alert>
+                        }
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                            required
+                            id="email"
+                            label="Email Address"
+                            autoComplete="email"
+                            type="email"
+                            {...register("email", { pattern: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/ })} />
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                            required
+                            label="Password"
+                            type="password"
+                            id="password"
+                            // autoComplete="current-password"
+                            {...register("password", { pattern: /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6,}$/ })} />
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                        >
+                            Sign In
                         </Button>
-                    {/* <GoogleButton
+                        {/* <GoogleButton
                         style={{
                             width: '100%',
                             filter: 'brightness(95%)',
@@ -157,20 +157,20 @@ const SignIn: FC = () => {
                         }}
                         onClick={gSignIn}
                     /> */}
-                    <Grid container>
-                        {/* <Grid item xs>
+                        <Grid container>
+                            {/* <Grid item xs>
                             <Link href="/passreset" variant="body2">
                                 Forgot password?
                                 </Link>
                         </Grid> */}
-                        <Grid item>
-                            <Link href="/signup" variant="body2">
-                                {"Don't have an account? Sign Up"}
-                            </Link>
+                            <Grid item>
+                                <Link href="/signup" variant="body2">
+                                    {"Don't have an account? Sign Up"}
+                                </Link>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                </form>
-            </div>
+                    </form>
+                </div>
             }
         </Container>
     );

@@ -1,7 +1,9 @@
+import { FC, useState } from 'react';
+
 import { Button, Typography } from '@material-ui/core';
-import { FC, useState } from 'react'
-import { useAuth } from '../authProvider';
 import Container from '@material-ui/core/Container';
+
+import { useAuth } from '../../authProvider';
 
 const HomeWelcome: FC = () => {
     const { user } = useAuth();

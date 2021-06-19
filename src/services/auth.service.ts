@@ -1,5 +1,5 @@
-import { IRegisterInputs, IUserData } from './../models/models';
-import { auth, firebase } from "../firebase";
+import { auth, firebase } from '../firebase';
+import { IRegisterInputs, IUserData } from '../models/models';
 import { createNewUser } from './users.service';
 
 const newUserData: IUserData = {

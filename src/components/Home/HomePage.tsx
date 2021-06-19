@@ -1,19 +1,15 @@
-import { FC } from 'react'
-import {
-    Route,
-    Switch,
-    BrowserRouter,
-    useRouteMatch
-} from 'react-router-dom';
-import Logout from './Logout';
+import { FC } from 'react';
+import { BrowserRouter, Route, Switch, useRouteMatch } from 'react-router-dom';
+
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { makeStyles, Theme } from '@material-ui/core/styles';
+
+import HomeWelcome from './HomeWelcome';
+import LandingFooter from './LandingFooter';
 import LandingNavBar from './LandingNavBar';
+import Logout from './Logout';
 // import PassReset from './PassReset';
 import SignIn from './SignIn';
-import LandingFooter from './LandingFooter';
-import HomeWelcome from './HomeWelcome';
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-
 
 const useStyles = makeStyles((theme: Theme) => ({
     landingMain: {
