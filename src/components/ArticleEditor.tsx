@@ -1,18 +1,19 @@
-import { FC, useEffect, useState, useRef, useLayoutEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import { ClassNameMap } from '@material-ui/styles';
 import { IArticle } from '../models/models';
-import { createNewArticleOnPath, createNewPrivateArticle } from '../services/articles.service';
+import { createNewArticleOnPath, createNewPrivateArticle, updateArticle } from '../services/articles.service';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { useAuth } from '../authProvider';
-import { Redirect, useHistory, useParams } from 'react-router-dom';
+import { Redirect, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import DeleteIcon from '@material-ui/icons/Delete'; import PublishIcon from '@material-ui/icons/Publish';
 import Typography from '@material-ui/core/Typography'
 import { SpaceNames } from './WorkspaceTreeView';
+import firebase from 'firebase';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -21,6 +22,10 @@ const useStyles = makeStyles((theme: Theme) =>
             flexWrap: 'wrap',
             flexFlow: 'column',
             padding: theme.spacing(1),
+        },
+        title: {
+            color: theme.palette.primary.main,
+            textShadow: "-3px 3px 30px #b9b9b9"
         },
         btnGroup: {
             alignSelf: "flex-end",
@@ -61,19 +66,19 @@ const ArticleEditor: FC<Props> = (props: Props) => {
     const { user } = useAuth();
     const history = useHistory();
     const params: Params = useParams();
-    // const { url, path } = useRouteMatch();
+    const { url, path } = useRouteMatch();
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [errors, setErrors] = useState<Array<string | null>>([])
 
     const newArticle: IArticle = {
-        key: '',
+        key: null,
+        location: null,
         title: '',
         content: '',
         children: [],
         creatorUID: user ? user.uid : '',
-        location: props.articleData ? props.articleData.location : '', //////////////
         comments: [],
         createdAt: new Date(),
         updatedAt: new Date()
@@ -150,18 +155,18 @@ const ArticleEditor: FC<Props> = (props: Props) => {
     const publishArticle = async () => {
         if (isFormValid()) {
             setErrors([]);
-            const space: string = params.space;
-            let resp;
-            if (space === SpaceNames.private) {
-                if (user) {
-                    resp = (await createNewPrivateArticle(article, user.uid).get())
-                }
-
-            }
-            resp = (await createNewArticleOnPath(space, article).get());
-            console.log(resp.val()); //////
-            console.log(resp.key); ////
-            history.goBack()
+            const spaceName: string = params.space;
+            const articleKey: string | null = params.article ? params.article : null
+            let path: string = `${spaceName}`
+            path = articleKey ? path + `/${articleKey}/children` : path;
+            if (user) {
+                if (spaceName === SpaceNames.private) {
+                    await createNewPrivateArticle(article, articleKey, user.uid);
+                } else {
+                    await createNewArticleOnPath(path, article);
+                };
+            };
+            history.goBack();
             return;
         }
         console.log('Errors', errors);
@@ -172,7 +177,6 @@ const ArticleEditor: FC<Props> = (props: Props) => {
         // eslint-disable-next-line no-restricted-globals
         if (confirm('Are you sure?')) {
             console.log('delete me');
-
         }
     }
 
@@ -180,6 +184,7 @@ const ArticleEditor: FC<Props> = (props: Props) => {
 
     return (
         <>
+            <Typography variant="h4" className={classes.title}>New {params.space} article</Typography>
             <form noValidate autoComplete="off" className={classes.root}>
                 <ButtonGroup size="large" variant="text" className={classes.btnGroup}>
                     <Button className={classes.btn} onClick={publishArticle}>

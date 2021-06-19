@@ -119,7 +119,7 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor, toggleArticle }) => {
             }
             return (
                 <TreeItem onClick={() => toggleArticleView(key, article)} key={key} nodeId={key} label={
-                    <TreeItemLabel addChild={(e) => console.log(e)} title={title} />
+                    <TreeItemLabel noPlus addChild={(e) => console.log(e)} title={title} />
                 }>
                     {
                         (children.length) ?
@@ -166,6 +166,7 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor, toggleArticle }) => {
         };
         fetchArticles();
         // articleTree && renderTree(articleTree)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedSpace])
 
 
@@ -212,7 +213,7 @@ const WorkspaceTreeView: FC<Props> = ({ toggleEditor, toggleArticle }) => {
                         <TreeItem
                             nodeId="addArticle"
                             label={
-                                <TreeItemLabel textColor="primary" noPlus title="Add article" />
+                                <TreeItemLabel textColor="primary" noPlus title={`Add ${selectedSpace} article`} />
                             }
                             icon={<AddBoxIcon color="primary" />}
                             onClick={(e) => toggleArticleEditor(e)}

@@ -6,12 +6,12 @@ export interface IUserData {
 }
 
 export interface IArticle {
-    key: string;
+    key: string | null;
+    location: string | null;
     title: string;
     content: string;
     children?: object;
     creatorUID: string;
-    location: string;
     comments: Array<IComment | null>;
     createdAt: Date; // or string?
     updatedAt: Date; // or string?

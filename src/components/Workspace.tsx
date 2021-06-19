@@ -26,6 +26,7 @@ import WorkspaceIconRow from './WorkspaceIconRow';
 import { IArticle } from '../models/models';
 import AddUser from './AddUser';
 import { fireLogout } from '../services/auth.service';
+import { getAllArticlesByTitle, getPublicArticlesByTitle } from '../services/articles.service';
 // import PlaceholderArticle from './PlaceholderArticle';
 // import WorkspaceNav from './WorkspaceNav';
 
@@ -165,16 +166,19 @@ const Workspace: FC = () => {
     const { user, userData } = useAuth();
     const [isAuth, setIsAuth] = useState<boolean>();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    // const open = Boolean(anchorEl);
     const [menuOpen, setMenuOpen] = useState(true);
-    // const [currentParentUrl, setCurrentParentUrl] = useState<string>(url);
+    const [query, setQuery] = useState<string>("");
     const optionsOpen = Boolean(anchorEl);
-
-
     const [currentArticleData, setCurrentArticleData] = useState<IArticle | null>(null);
-    // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     setIsAuth(event.target.checked);
-    // };
+
+    const searchQuery = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (user) {
+            getAllArticlesByTitle(query)
+        } else {
+            getPublicArticlesByTitle(query)
+        }
+    }
 
     const handleMenuSelect = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -195,19 +199,23 @@ const Workspace: FC = () => {
         history.push("/")
     }
 
+    const addChildPage = (currentLocation: string): void => {
+        // console.log("toggle add child page", e); ///////////////
+        history.push(`${currentLocation}/new`);
+    }
+
     const toggleEditor = (newLocation: string): void => {
         setCurrentArticleData(null);
-        history.push(`${url}/${newLocation}/new`)
+        history.push(`${url}/${newLocation}/new`);
     };
 
     const toggleArticle = (newLocation: string, data: IArticle | null): void => {
-        // console.log(newLocation, data);
         setCurrentArticleData(data);
-        history.push(`${url}/${newLocation}`)
+        history.push(`${url}/${newLocation}`);
     };
 
     useEffect(() => {
-        user ? setIsAuth(true) : setIsAuth(false)
+        user ? setIsAuth(true) : setIsAuth(false);
     }, [user])
 
     return (
@@ -231,14 +239,18 @@ const Workspace: FC = () => {
                         <div className={classes.searchIcon}>
                             <SearchIcon />
                         </div>
-                        <InputBase
-                            placeholder="Search…"
-                            classes={{
-                                root: classes.inputRoot,
-                                input: classes.inputInput,
-                            }}
-                            inputProps={{ 'aria-label': 'search' }}
-                        />
+                        <form onSubmit={searchQuery}>
+                            <InputBase
+                                placeholder="Search…"
+                                classes={{
+                                    root: classes.inputRoot,
+                                    input: classes.inputInput,
+                                }}
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                                inputProps={{ 'aria-label': 'search' }}
+                            />
+                        </form>
                     </div>
                     {isAuth && (
                         <div>
@@ -307,7 +319,7 @@ const Workspace: FC = () => {
                         toggleEditor={toggleEditor}
                         toggleArticle={toggleArticle}
                     />
-                    : <WorkspaceIconRow />
+                    : <WorkspaceIconRow toggleEditor={toggleEditor} />
                 }
             </Drawer>
             <main className={classes.content}>
@@ -320,8 +332,8 @@ const Workspace: FC = () => {
                         <Route exact path={`${url}/:space/:article?/new`}>
                             <ArticleEditor articleData={currentArticleData} />
                         </Route>
-                        <Route path={`${url}/:location`}>
-                            <ArticleView data={currentArticleData} />
+                        <Route path={`${url}/:space/:article?`}>
+                            <ArticleView addChild={addChildPage} data={currentArticleData} />
                         </Route>
                     </Switch>
                 </Container>
