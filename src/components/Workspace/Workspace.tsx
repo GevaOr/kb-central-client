@@ -180,17 +180,16 @@ const Workspace: FC = () => {
         }
         let results: FlattenedArticleArr = [];
         if (user) {
-            results = await getAllArticlesByTitle(query, user.uid)
+            results = await getAllArticlesByTitle(query.toLowerCase(), user.uid)
         } else {
-            results = await getPublicArticlesByTitle(query)
+            results = await getPublicArticlesByTitle(query.toLowerCase())
         }
         toggleSearchResults(results);
     }
 
     const toggleSearchResults = (results: FlattenedArticleArr): void => {
-        console.log("Search results:", results);
         setSearchResults(results);
-        history.push(`${url}/search?query=${query}`)
+        history.push(`${url}/search/${query}`)
     }
 
     const handleMenuSelect = (event: React.MouseEvent<HTMLElement>) => {
@@ -309,8 +308,6 @@ const Workspace: FC = () => {
                 </Toolbar>
             </AppBar>
 
-            {/* <WorkspaceNav /> */}
-
             <Drawer
                 variant="permanent"
                 classes={{
@@ -337,10 +334,12 @@ const Workspace: FC = () => {
             <main className={classes.content}>
                 <div className={classes.appBarSpacer} />
                 <Container maxWidth="lg" className={classes.container}>
-                    {/* <SearchResults query={query} searchResults={searchResults} /> */}
                     <Switch>
-                        <Route path={`${url}/search?query=${query}`}>
-                            <SearchResults query={query} searchResults={searchResults} />
+                        <Route path={`${url}/search/:query`}>
+                            <SearchResults
+                                emitArticleData={toggleArticle}
+                                searchResults={searchResults}
+                            />
                         </Route>
                         <Route exact path={`${url}/addusers`}>
                             {userData?.isAdmin ? <AddUser /> : <Redirect to="/" />}
@@ -358,7 +357,10 @@ const Workspace: FC = () => {
                             />
                         </Route>
                         <Route path={`${url}/:space/:article?`}>
-                            <ArticleView addChild={addChildPage} data={currentArticleData} />
+                            <ArticleView
+                                addChild={addChildPage}
+                                data={currentArticleData}
+                            />
                         </Route>
                     </Switch>
                 </Container>

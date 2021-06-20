@@ -6,9 +6,12 @@ const articles = db.ref("/articles");
 const publicArticles = articles.child(SpaceNames.public);
 const internalArticles = articles.child(SpaceNames.internal);
 
-export type FlattenedArticleArr = Array<{
-    key: string, title: string, location: string
-} | null>
+export type FlattenedArticleArr = Array<IArticle | null>
+
+// SAVE ONLY SOME KEYS
+// export type FlattenedArticleArr = Array<{
+//     key: string, title: string, location: string
+// } | null>
 
 const getFlattenedObj = (currentObj: any) => {
     const flattenedArticleArr: FlattenedArticleArr = [];
@@ -24,14 +27,17 @@ const flattenArticles = (currentObj: IArticle | any, flattenedArticleArr: Flatte
         if (articleData.hasOwnProperty('children')) {
             flattenArticles(articleData.children, flattenedArticleArr)
         }
-        const { title, location } = articleData
-        flattenedArticleArr.push(
-            {
-                key: key,
-                title: title,
-                location: location
-            }
-        )
+        flattenedArticleArr.push(articleData)
+
+        // SAVE ONLY SOME KEYS
+        // const { title, location } = articleData
+        // flattenedArticleArr.push(
+        //     {
+        //         key: key,
+        //         title: title,
+        //         location: location
+        //     }
+        // )
     })
 }
 
@@ -44,7 +50,7 @@ export const getAllArticlesByTitle = async (query: string, uid: string) => {
     for (const space of spaces) {
         dataArr.push(...getFlattenedObj(space))
     }
-    return dataArr.filter(article => article?.title.includes(query));
+    return dataArr.filter(article => article?.title.toLowerCase().includes(query.toLowerCase()));
 };
 
 
@@ -52,7 +58,7 @@ export const getPublicArticlesByTitle = async (query: string) => {
     const publicArticles = (await getPublicArticles()).val();
     const dataArr: FlattenedArticleArr = []
     dataArr.push(...getFlattenedObj(publicArticles))
-    return dataArr.filter(article => article?.title.includes(query));
+    return dataArr.filter(article => article?.title.toLowerCase().includes(query.toLowerCase()));
 };
 
 export const getArticleByPath = (path: string): Promise<firebase.database.DataSnapshot> => {

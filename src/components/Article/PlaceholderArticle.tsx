@@ -4,6 +4,7 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { ClassNameMap } from '@material-ui/core/styles/withStyles';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import { useAuth } from '../../authProvider';
 
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -42,6 +43,8 @@ interface Props {
 
 const PlaceholderArticle = (props: Props) => {
     const classes: ClassNameMap = useStyles();
+    const { user } = useAuth();
+
     return (
         <div className={classes.root}>
             <CssBaseline />
@@ -51,7 +54,13 @@ const PlaceholderArticle = (props: Props) => {
             </div>
             <div className={classes.leftArrowCont}>
                 <ArrowBackIcon fontSize="large" className={classes.leftArrow} />
-                <Typography variant="subtitle1">Add/read articles</Typography>
+                <Typography variant="subtitle1">
+                    {user ?
+                        <span>Add/read </span>
+                        : <span>Read </span>
+                    }
+                    articles
+                </Typography>
             </div>
             <div>
                 <Typography align="center" className={classes.title} variant="h2">Start Working!</Typography>
