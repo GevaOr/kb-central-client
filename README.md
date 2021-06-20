@@ -1,6 +1,8 @@
-# Getting Started with Create React App
+# KB Central
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+I made this project as my final project for the Fullstack Web Development course I enrolled in the past year.
+KB Central is a document management platform that is designed to gather internal and external use articles, manage access, and publish documents with ease.
+Articles can be stacked (similar to Confluence), making every article a potential category - allowing for flexibility of use.
 
 ## Available Scripts
 
@@ -13,11 +15,6 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `npm run build`
 
