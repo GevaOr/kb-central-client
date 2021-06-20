@@ -18,7 +18,7 @@ const HomeWelcome: FC = () => {
                     `Welcome to the ${productName} knowledge base!`
                 }
             </Typography>
-            <Button style={{ marginTop: 20 }} variant="contained" color="primary" href="/workspace" disableElevation size="large">
+            <Button style={{ marginTop: 50 }} variant="contained" color="primary" href="/workspace" disableElevation size="large">
                 Start reading!
             </Button>
 
