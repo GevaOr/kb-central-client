@@ -32,16 +32,16 @@ const useStyles = makeStyles((theme) => ({
         },
         position: 'fixed',
         left: 0,
-        bottom: 1,
+        bottom: 0,
+        width: '100%'
     },
 }));
 
 const LandingFooter: FC = () => {
-    // const { user } = useAuth();
     const classes = useStyles();
 
     return (
-        <Container maxWidth="md" component="footer" className={classes.footer}>
+        <Container component="footer" className={classes.footer}>
             <Grid container spacing={4} justify="space-evenly">
                 <Grid item xs={6} sm={3}>
                     <Typography variant="h6" color="textPrimary" gutterBottom>
