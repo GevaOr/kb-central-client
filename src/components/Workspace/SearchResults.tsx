@@ -19,17 +19,11 @@ const useStyles = makeStyles((theme: Theme) =>
             flexFlow: 'column',
             padding: theme.spacing(1),
         },
-        btnCont: {
-            display: 'flex',
-            flexFlow: 'column',
-        },
-        btnGroup: {
-            alignSelf: "flex-end",
-            marginBottom: theme.spacing(2),
-        },
-        btn: {
-            display: "flex",
-            justifyContent: "space-between",
+        resultsCont: {
+            border: `1px solid ${theme.palette.grey[300]}`,
+            borderRadius: '5px',
+            boxShadow: `-3px 3px 10px ${theme.palette.grey[300]}`
+            // backgroundColor: 'red',
         },
     }),
 );
@@ -57,7 +51,7 @@ const SearchResults: FC<Props> = ({ searchResults, emitArticleData }) => {
     return (<>
         <Typography variant="h3" color="initial">Results for "{query}":</Typography>
         <div className={classes.root}>
-            <List component="nav">
+            <List component="nav" className={classes.resultsCont}>
                 {searchResults.length > 0 ?
                     searchResults.map(result => {
                         if (result) {
